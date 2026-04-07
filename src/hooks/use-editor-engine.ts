@@ -110,15 +110,27 @@ export function useEditorEngine({
     return count;
   }, [value]);
 
-  // Sync textarea value when controlled value changes externally
+  // Auto-resize textarea to match content so caret is always visible
+  const autoResize = useCallback(() => {
+    const ta = textareaRef.current;
+    if (!ta) return;
+    ta.style.height = "auto";
+    ta.style.height = ta.scrollHeight + "px";
+  }, []);
+
+  // Sync textarea value and auto-resize when value changes
   useEffect(() => {
     const ta = textareaRef.current;
-    if (!ta || ta.value === value) return;
-    const { selectionStart, selectionEnd } = ta;
-    ta.value = value;
-    ta.selectionStart = selectionStart;
-    ta.selectionEnd = selectionEnd;
-  }, [value]);
+    if (!ta) return;
+    if (ta.value !== value) {
+      const { selectionStart, selectionEnd } = ta;
+      ta.value = value;
+      ta.selectionStart = selectionStart;
+      ta.selectionEnd = selectionEnd;
+    }
+    // Always resize — handles initial mount and external value changes
+    autoResize();
+  }, [value, autoResize]);
 
   const updateCursorInfo = useCallback(() => {
     const ta = textareaRef.current;
@@ -137,8 +149,9 @@ export function useEditorEngine({
     const ta = textareaRef.current;
     if (!ta) return;
     onChangeRef.current?.(ta.value);
+    autoResize();
     updateCursorInfo();
-  }, [updateCursorInfo]);
+  }, [autoResize, updateCursorInfo]);
 
   const handleSelect = useCallback(() => {
     updateCursorInfo();
@@ -208,6 +221,7 @@ export function useEditorEngine({
           ta.selectionStart = ta.selectionEnd = start + tabSize;
           onChangeRef.current?.(ta.value);
         }
+        autoResize();
         updateCursorInfo();
         return;
       }
@@ -231,11 +245,12 @@ export function useEditorEngine({
         ta.value = before + insertion + after;
         ta.selectionStart = ta.selectionEnd = start + insertion.length;
         onChangeRef.current?.(ta.value);
+        autoResize();
         updateCursorInfo();
         return;
       }
     },
-    [readOnly, tabSize, updateCursorInfo],
+    [readOnly, tabSize, autoResize, updateCursorInfo],
   );
 
   return {

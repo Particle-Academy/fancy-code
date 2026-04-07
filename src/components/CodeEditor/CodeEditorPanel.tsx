@@ -109,10 +109,11 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
           {/* Actual textarea for input */}
           <textarea
             ref={textareaRef}
-            className="relative m-0 block w-full resize-none overflow-hidden border-none bg-transparent p-2.5 text-[13px] leading-[1.5] text-transparent outline-none"
+            className="relative m-0 block w-full resize-none border-none bg-transparent p-2.5 text-[13px] leading-[1.5] text-transparent outline-none"
             style={{
               caretColor: themeColors.cursorColor,
               minHeight: _minHeight ? _minHeight - 40 : 80,
+              overflow: "hidden",
               whiteSpace: wordWrap ? "pre-wrap" : "pre",
               overflowWrap: wordWrap ? "break-word" : "normal",
             }}
