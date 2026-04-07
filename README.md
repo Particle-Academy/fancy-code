@@ -354,6 +354,30 @@ export { registerTheme, getTheme, getRegisteredThemes };
 export type { ThemeDefinition };
 ```
 
+## Related: TreeNav from react-fancy
+
+For IDE-style layouts, pair `CodeEditor` with the `TreeNav` component from `@particle-academy/react-fancy`. TreeNav provides hierarchical file/folder navigation with expand/collapse, selection, and extension-based file icons.
+
+```tsx
+import { TreeNav } from "@particle-academy/react-fancy";
+import { CodeEditor } from "@particle-academy/fancy-code";
+
+<div className="flex" style={{ height: 600 }}>
+  <TreeNav
+    nodes={fileTree}
+    selectedId={activeFile}
+    onSelect={(id, node) => openFile(id, node)}
+  />
+  <CodeEditor value={code} onChange={setCode} language={lang}>
+    <CodeEditor.Toolbar />
+    <CodeEditor.Panel />
+    <CodeEditor.StatusBar />
+  </CodeEditor>
+</div>
+```
+
+See the full IDE demo at `/react-demos/ide` in the monorepo.
+
 ## Demo Pages
 
 The demo page lives in the monorepo at `resources/js/react-demos/pages/CodeEditorDemo.tsx` and is accessible at `/react-demos/code-editor`. It demonstrates:
