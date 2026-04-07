@@ -1,43 +1,44 @@
-/* @particle-academy/fancy-code — base editor styles */
+/* @particle-academy/fancy-code — editor styles */
 
-/* Ensure CodeMirror fills its container */
-[data-fancy-code-panel] .cm-editor {
-  height: 100%;
-}
-
-[data-fancy-code-panel] .cm-editor.cm-focused {
-  outline: none;
-}
-
-/* Monospace font for code content */
-[data-fancy-code-panel] .cm-scroller {
+/* Monospace font for code */
+[data-fancy-code-panel] textarea,
+[data-fancy-code-panel] pre,
+[data-fancy-code-panel] code {
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
 
-/* Smooth transitions for theme switching */
-[data-fancy-code-panel] .cm-gutters {
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+/* Textarea and overlay must share identical text rendering */
+[data-fancy-code-panel] textarea,
+[data-fancy-code-panel] pre {
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: normal;
+  word-spacing: normal;
+  font-variant-ligatures: none;
 }
 
-[data-fancy-code-panel] .cm-editor {
-  transition: background-color 0.15s ease;
+/* Remove default textarea styling */
+[data-fancy-code-panel] textarea {
+  white-space: pre;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 /* Scrollbar styling */
-[data-fancy-code-panel] .cm-scroller::-webkit-scrollbar {
+[data-fancy-code-panel]::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-[data-fancy-code-panel] .cm-scroller::-webkit-scrollbar-track {
+[data-fancy-code-panel]::-webkit-scrollbar-track {
   background: transparent;
 }
 
-[data-fancy-code-panel] .cm-scroller::-webkit-scrollbar-thumb {
+[data-fancy-code-panel]::-webkit-scrollbar-thumb {
   background: #a1a1aa;
   border-radius: 4px;
 }
 
-.dark [data-fancy-code-panel] .cm-scroller::-webkit-scrollbar-thumb {
+.dark [data-fancy-code-panel]::-webkit-scrollbar-thumb {
   background: #52525b;
 }

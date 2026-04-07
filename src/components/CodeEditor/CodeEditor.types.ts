@@ -1,6 +1,5 @@
-import type { ReactNode, RefObject } from "react";
-import type { Extension } from "@codemirror/state";
-import type { EditorView } from "@codemirror/view";
+import type { ReactNode } from "react";
+import type { UseEditorEngineReturn } from "../../hooks/use-editor-engine";
 
 export interface CodeEditorProps {
   children: ReactNode;
@@ -31,13 +30,9 @@ export interface CodeEditorProps {
   minHeight?: number;
   /** Maximum height in px (scrolls beyond this) */
   maxHeight?: number;
-  /** Additional CodeMirror extensions */
-  extensions?: Extension[];
 }
 
 export interface CodeEditorContextValue {
-  /** The CodeMirror EditorView (null during SSR or before mount) */
-  view: EditorView | null;
   /** Get the current document text */
   getValue: () => string;
   /** Get the currently selected text */
@@ -72,8 +67,10 @@ export interface CodeEditorContextValue {
   cursorPosition: { line: number; col: number };
   /** Length of the current selection (0 if none) */
   selectionLength: number;
-  /** @internal Ref for the CodeMirror mount point */
-  _containerRef: RefObject<HTMLDivElement | null>;
+  /** Placeholder text */
+  placeholder?: string;
+  /** @internal */
+  _engineReturn: UseEditorEngineReturn | null;
   /** @internal */
   _minHeight?: number;
   /** @internal */

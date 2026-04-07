@@ -1,4 +1,4 @@
-export type { ThemeDefinition } from "./types";
+export type { ThemeDefinition, ThemeColors } from "./types";
 export { registerTheme, getTheme, getRegisteredThemes } from "./registry";
 
 // Register built-in themes on import

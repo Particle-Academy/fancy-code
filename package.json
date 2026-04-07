@@ -1,6 +1,6 @@
 {
   "name": "@particle-academy/fancy-code",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Lightweight embedded code editor with syntax highlighting and extensible language/theme registries",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -35,18 +35,7 @@
     "react-dom": "^18.0.0 || ^19.0.0",
     "@particle-academy/react-fancy": "^1.5.0"
   },
-  "dependencies": {
-    "@codemirror/autocomplete": "^6.0.0",
-    "@codemirror/commands": "^6.0.0",
-    "@codemirror/lang-html": "^6.0.0",
-    "@codemirror/lang-javascript": "^6.0.0",
-    "@codemirror/lang-php": "^6.0.0",
-    "@codemirror/language": "^6.0.0",
-    "@codemirror/search": "^6.0.0",
-    "@codemirror/state": "^6.0.0",
-    "@codemirror/view": "^6.0.0",
-    "@lezer/highlight": "^1.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@particle-academy/react-fancy": "workspace:*",
     "@types/react": "^19.0.0",
@@ -64,6 +53,7 @@
     "**/*.css",
     "src/languages/builtin.ts",
     "src/languages/index.ts",
+    "src/engine/**/*.ts",
     "src/themes/light.ts",
     "src/themes/dark.ts",
     "src/themes/index.ts"

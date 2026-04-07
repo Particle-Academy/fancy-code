@@ -14,4 +14,7 @@ export type { LanguageDefinition } from "./languages";
 
 // Theme registration
 export { registerTheme, getTheme, getRegisteredThemes } from "./themes";
-export type { ThemeDefinition } from "./themes";
+export type { ThemeDefinition, ThemeColors } from "./themes";
+
+// Tokenizer types (for custom language authors)
+export type { Token, TokenType, Tokenizer } from "./engine/tokenizer";

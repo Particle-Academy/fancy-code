@@ -5,7 +5,7 @@ import { CodeEditorPanel } from "./CodeEditorPanel";
 import { CodeEditorToolbar } from "./CodeEditorToolbar";
 import { CodeEditorToolbarSeparator } from "./CodeEditorToolbarSeparator";
 import { CodeEditorStatusBar } from "./CodeEditorStatusBar";
-import { useCodemirror } from "../../hooks/use-codemirror";
+import { useEditorEngine } from "../../hooks/use-editor-engine";
 import { useDarkMode } from "../../hooks/use-dark-mode";
 import { getLanguage } from "../../languages";
 import type { CodeEditorProps, CodeEditorContextValue } from "./CodeEditor.types";
@@ -26,7 +26,6 @@ function CodeEditorRoot({
   placeholder,
   minHeight,
   maxHeight,
-  extensions: additionalExtensions,
 }: CodeEditorProps) {
   const [currentValue, setCurrentValue] = useControllableState(valueProp, defaultValue, onChange);
 
@@ -36,7 +35,6 @@ function CodeEditorRoot({
 
   // Language state (changeable via toolbar selector)
   const [currentLanguage, setCurrentLanguageState] = useState(() => {
-    // Resolve to display name
     const def = getLanguage(languageProp);
     return def?.name ?? languageProp;
   });
@@ -59,11 +57,10 @@ function CodeEditorRoot({
   const [cursorPosition, setCursorPosition] = useState({ line: 1, col: 1 });
   const [selectionLength, setSelectionLength] = useState(0);
 
-  // Container ref for CodeMirror mount
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Core CodeMirror hook
-  const { view } = useCodemirror({
+  // Our custom editor engine
+  const engineReturn = useEditorEngine({
     containerRef,
     value: currentValue,
     onChange: setCurrentValue,
@@ -76,8 +73,6 @@ function CodeEditorRoot({
     placeholder,
     minHeight,
     maxHeight,
-    searchEnabled: true,
-    additionalExtensions,
     onCursorChange: ({ line, col, selectionLength: sel }) => {
       setCursorPosition({ line, col });
       setSelectionLength(sel);
@@ -86,19 +81,25 @@ function CodeEditorRoot({
 
   const contextValue = useMemo<CodeEditorContextValue>(
     () => ({
-      view,
-      getValue: () => view?.state.doc.toString() ?? currentValue,
+      getValue: () => engineReturn.textareaRef.current?.value ?? currentValue,
       getSelection: () => {
-        if (!view) return "";
-        const sel = view.state.selection.main;
-        return view.state.sliceDoc(sel.from, sel.to);
+        const ta = engineReturn.textareaRef.current;
+        if (!ta) return "";
+        return ta.value.slice(ta.selectionStart, ta.selectionEnd);
       },
       setValue: (v: string) => setCurrentValue(v),
       replaceSelection: (text: string) => {
-        if (!view) return;
-        view.dispatch(view.state.replaceSelection(text));
+        const ta = engineReturn.textareaRef.current;
+        if (!ta) return;
+        const start = ta.selectionStart;
+        const end = ta.selectionEnd;
+        const before = ta.value.slice(0, start);
+        const after = ta.value.slice(end);
+        ta.value = before + text + after;
+        ta.selectionStart = ta.selectionEnd = start + text.length;
+        setCurrentValue(ta.value);
       },
-      focus: () => view?.focus(),
+      focus: () => engineReturn.textareaRef.current?.focus(),
       language: currentLanguage,
       setLanguage,
       theme: resolvedTheme,
@@ -109,16 +110,17 @@ function CodeEditorRoot({
       toggleWordWrap: () => setIsWordWrap((w) => !w),
       toggleLineNumbers: () => setShowLineNumbers((l) => !l),
       copyToClipboard: async () => {
-        const text = view?.state.doc.toString() ?? currentValue;
+        const text = engineReturn.textareaRef.current?.value ?? currentValue;
         await navigator.clipboard.writeText(text);
       },
       cursorPosition,
       selectionLength,
-      _containerRef: containerRef,
+      placeholder,
+      _engineReturn: engineReturn,
       _minHeight: minHeight,
       _maxHeight: maxHeight,
     }),
-    [view, currentValue, currentLanguage, setLanguage, resolvedTheme, readOnly, showLineNumbers, isWordWrap, tabSizeProp, cursorPosition, selectionLength, setCurrentValue, minHeight, maxHeight],
+    [engineReturn, currentValue, currentLanguage, setLanguage, resolvedTheme, readOnly, showLineNumbers, isWordWrap, tabSizeProp, cursorPosition, selectionLength, setCurrentValue, placeholder, minHeight, maxHeight],
   );
 
   return (
