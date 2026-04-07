@@ -374,8 +374,8 @@ Guidelines for AI agents (Claude Code, Copilot, etc.) working on this package.
 
 ### Editor Engine
 
-- The `useCodemirror` hook manages the editor lifecycle using CodeMirror 6.
-- Uses `Compartment` for hot-swapping language, theme, line numbers, word wrap, tab size, read-only, placeholder, and height constraints.
+- The `useCodemirror` hook manages the editor lifecycle.
+- Uses compartments for hot-swapping language, theme, line numbers, word wrap, tab size, read-only, placeholder, and height constraints.
 - External value changes are synced via `isExternalUpdate` ref to prevent onChange loops.
 - SSR-safe: the editor is only created inside `useEffect`.
 
