@@ -7,6 +7,7 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
   const {
     _engineReturn: engine,
     lineNumbers,
+    wordWrap,
     readOnly,
     placeholder,
     _maxHeight,
@@ -85,8 +86,12 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
         <div className="relative min-w-0 flex-1">
           {/* Highlighted code overlay */}
           <pre
-            className="pointer-events-none absolute inset-0 m-0 overflow-hidden whitespace-pre border-none p-2.5 text-[13px] leading-[1.5]"
+            className="pointer-events-none absolute inset-0 m-0 overflow-hidden border-none p-2.5 text-[13px] leading-[1.5]"
             aria-hidden="true"
+            style={{
+              whiteSpace: wordWrap ? "pre-wrap" : "pre",
+              overflowWrap: wordWrap ? "break-word" : "normal",
+            }}
           >
             <code dangerouslySetInnerHTML={{ __html: highlightedHtml + "\n" }} />
           </pre>
@@ -104,10 +109,12 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
           {/* Actual textarea for input */}
           <textarea
             ref={textareaRef}
-            className="relative m-0 block w-full resize-none border-none bg-transparent p-2.5 text-[13px] leading-[1.5] text-transparent outline-none"
+            className="relative m-0 block w-full resize-none overflow-hidden border-none bg-transparent p-2.5 text-[13px] leading-[1.5] text-transparent outline-none"
             style={{
               caretColor: themeColors.cursorColor,
               minHeight: _minHeight ? _minHeight - 40 : 80,
+              whiteSpace: wordWrap ? "pre-wrap" : "pre",
+              overflowWrap: wordWrap ? "break-word" : "normal",
             }}
             spellCheck={false}
             autoComplete="off"
