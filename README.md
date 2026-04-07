@@ -37,7 +37,12 @@ function App() {
   const [code, setCode] = useState('console.log("Hello");');
 
   return (
-    <CodeEditor value={code} onChange={setCode} language="javascript">
+    <CodeEditor
+      value={code}
+      onChange={setCode}
+      language="javascript"
+      className="rounded-xl border border-zinc-200 dark:border-zinc-700"
+    >
       <CodeEditor.Toolbar />
       <CodeEditor.Panel />
       <CodeEditor.StatusBar />
@@ -45,6 +50,8 @@ function App() {
   );
 }
 ```
+
+The component has no default border or rounding — add your own via `className` for standalone use, or embed directly into IDE layouts without visual conflicts.
 
 ## Commands
 
@@ -86,7 +93,6 @@ interface CodeEditorProps {
   placeholder?: string;
   minHeight?: number;              // Minimum height in px
   maxHeight?: number;              // Max height before scrolling
-  extensions?: Extension[];        // Additional editor extensions
 }
 ```
 
