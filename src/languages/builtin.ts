@@ -2,6 +2,8 @@ import { registerLanguage } from "./registry";
 import { tokenizeJavaScript } from "../engine/tokenizers/javascript";
 import { tokenizeHtml } from "../engine/tokenizers/html";
 import { tokenizePhp } from "../engine/tokenizers/php";
+import { tokenizePython } from "../engine/tokenizers/python";
+import { tokenizeGo } from "../engine/tokenizers/go";
 
 registerLanguage({
   name: "JavaScript",
@@ -25,4 +27,16 @@ registerLanguage({
   name: "PHP",
   aliases: ["php"],
   tokenize: tokenizePhp,
+});
+
+registerLanguage({
+  name: "Python",
+  aliases: ["py", "python"],
+  tokenize: tokenizePython,
+});
+
+registerLanguage({
+  name: "Go",
+  aliases: ["go", "golang"],
+  tokenize: tokenizeGo,
 });

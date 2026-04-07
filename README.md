@@ -201,10 +201,12 @@ function RunButton() {
 | TypeScript | `ts`, `typescript`, `tsx` |
 | HTML | `html`, `htm` |
 | PHP | `php` |
+| Python | `py`, `python` |
+| Go | `go`, `golang` |
 
 ## Custom Language Registration
 
-Add languages beyond the four built-ins using `registerLanguage`:
+Add languages beyond the built-ins using `registerLanguage`:
 
 ```tsx
 import { registerLanguage } from "@particle-academy/fancy-code";

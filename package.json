@@ -1,6 +1,6 @@
 {
   "name": "@particle-academy/fancy-code",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Lightweight embedded code editor with syntax highlighting and extensible language/theme registries",
   "type": "module",
   "main": "./dist/index.cjs",
