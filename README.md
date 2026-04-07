@@ -1,6 +1,6 @@
 # @particle-academy/fancy-code
 
-Lightweight embedded code editor built on CodeMirror 6. Compound component API with custom toolbar buttons, syntax highlighting color schemes, and extensible language/theme registries.
+Lightweight embedded code editor with syntax highlighting, custom toolbar buttons, and extensible language/theme registries. Part of the `@particle-academy` component ecosystem.
 
 ## Installation
 
@@ -16,8 +16,6 @@ yarn add @particle-academy/fancy-code
 ```
 
 **Peer dependencies:** `react >= 18`, `react-dom >= 18`, `@particle-academy/react-fancy >= 1.5`
-
-**Bundled dependencies:** CodeMirror 6 (state, view, commands, language, search, autocomplete), language packages (JavaScript, TypeScript, HTML, PHP), `@lezer/highlight`
 
 ## Usage
 
@@ -66,7 +64,7 @@ pnpm --filter @particle-academy/fancy-code clean    # Remove dist/
 | `CodeEditor` | Root wrapper — context provider, state management |
 | `CodeEditor.Toolbar` | Action bar with default buttons or custom children |
 | `CodeEditor.Toolbar.Separator` | Vertical divider between toolbar groups |
-| `CodeEditor.Panel` | CodeMirror editing surface |
+| `CodeEditor.Panel` | Code editing surface |
 | `CodeEditor.StatusBar` | Cursor position, language, tab size display |
 
 ### CodeEditor Props
@@ -88,7 +86,7 @@ interface CodeEditorProps {
   placeholder?: string;
   minHeight?: number;              // Minimum height in px
   maxHeight?: number;              // Max height before scrolling
-  extensions?: Extension[];        // Additional CodeMirror extensions
+  extensions?: Extension[];        // Additional editor extensions
 }
 ```
 
@@ -102,7 +100,7 @@ import { Action } from "@particle-academy/react-fancy";
 
 function RunButton() {
   const { getValue } = useCodeEditor();
-  return <Action size="xs" onClick={() => eval(getValue())}>Run</Action>;
+  return <Action size="xs" onClick={() => run(getValue())}>Run</Action>;
 }
 
 <CodeEditor value={code} onChange={setCode} language="javascript">
@@ -118,7 +116,6 @@ function RunButton() {
 
 | Method / Property | Description |
 |-------------------|-------------|
-| `view` | The CodeMirror `EditorView` instance (null before mount) |
 | `getValue()` | Get current document text |
 | `getSelection()` | Get currently selected text |
 | `setValue(text)` | Replace entire document |
@@ -205,13 +202,15 @@ Add languages beyond the four built-ins using `registerLanguage`:
 
 ```tsx
 import { registerLanguage } from "@particle-academy/fancy-code";
-import { python } from "@codemirror/lang-python";
 
-// Synchronous (package already installed)
 registerLanguage({
   name: "Python",
   aliases: ["py", "python"],
-  support: () => python(),
+  support: () => {
+    // Return a LanguageSupport instance
+    const { python } = require("@codemirror/lang-python");
+    return python();
+  },
 });
 
 // Lazy-loaded
@@ -245,27 +244,12 @@ Create custom syntax highlighting color schemes using `registerTheme`:
 
 ```tsx
 import { registerTheme } from "@particle-academy/fancy-code";
-import { EditorView } from "@codemirror/view";
-import { HighlightStyle } from "@codemirror/language";
-import { tags } from "@lezer/highlight";
 
 registerTheme({
   name: "monokai",
   variant: "dark",
-  editorTheme: EditorView.theme({
-    "&": { backgroundColor: "#272822", color: "#f8f8f2" },
-    ".cm-gutters": { backgroundColor: "#272822", color: "#75715e" },
-    ".cm-activeLine": { backgroundColor: "#3e3d32" },
-    // ... other editor chrome styles
-  }, { dark: true }),
-  highlightStyle: HighlightStyle.define([
-    { tag: tags.keyword, color: "#f92672" },
-    { tag: tags.string, color: "#e6db74" },
-    { tag: tags.function(tags.variableName), color: "#a6e22e" },
-    { tag: tags.number, color: "#ae81ff" },
-    { tag: tags.comment, color: "#75715e", fontStyle: "italic" },
-    // ... other token styles
-  ]),
+  editorTheme: /* editor chrome styles (background, gutter, cursor, selection) */,
+  highlightStyle: /* token color definitions (keywords, strings, comments, etc.) */,
 });
 ```
 
@@ -280,15 +264,13 @@ Then use it:
 ```ts
 interface ThemeDefinition {
   name: string;                    // Unique theme name
-  variant: "light" | "dark";      // For EditorView.darkTheme
-  editorTheme: Extension;         // EditorView.theme({...}) — gutter, cursor, selection
-  highlightStyle: HighlightStyle; // HighlightStyle.define([...]) — token colors
+  variant: "light" | "dark";      // Light or dark base
+  editorTheme: Extension;         // Editor chrome styles (gutter, cursor, selection)
+  highlightStyle: HighlightStyle; // Syntax token color definitions
 }
 ```
 
 ## Built-in Features
-
-The editor includes these CodeMirror extensions out of the box:
 
 - Syntax highlighting with language-aware tokenization
 - Line numbers with active line gutter highlight
@@ -302,7 +284,19 @@ The editor includes these CodeMirror extensions out of the box:
 - Selection highlighting
 - Tab key indentation
 
-All features are reconfigurable at runtime via compartments — switching languages, themes, line numbers, word wrap, tab size, and read-only mode happens without recreating the editor.
+All features are reconfigurable at runtime — switching languages, themes, line numbers, word wrap, tab size, and read-only mode happens without recreating the editor.
+
+## Customization
+
+All components render `data-fancy-code-*` attributes on their root elements for external CSS targeting:
+
+| Attribute | Element |
+|-----------|---------|
+| `data-fancy-code-editor` | Root wrapper |
+| `data-fancy-code-toolbar` | Toolbar bar |
+| `data-fancy-code-toolbar-separator` | Toolbar separator |
+| `data-fancy-code-panel` | Editing surface |
+| `data-fancy-code-statusbar` | Status bar |
 
 ## Architecture
 
@@ -312,41 +306,31 @@ All features are reconfigurable at runtime via compartments — switching langua
 src/
 ├── components/
 │   └── CodeEditor/
-│       ├── CodeEditor.tsx           # Root compound component + context
-│       ├── CodeEditor.types.ts      # All prop/context types
-│       ├── CodeEditor.context.ts    # React context + useCodeEditor hook
-│       ├── CodeEditorPanel.tsx      # CodeMirror mount point
-│       ├── CodeEditorToolbar.tsx    # Default toolbar + custom children
+│       ├── CodeEditor.tsx              # Root compound component + context
+│       ├── CodeEditor.types.ts         # All prop/context types
+│       ├── CodeEditor.context.ts       # React context + useCodeEditor hook
+│       ├── CodeEditorPanel.tsx         # Editing surface
+│       ├── CodeEditorToolbar.tsx       # Default toolbar + custom children
 │       ├── CodeEditorToolbarSeparator.tsx
-│       ├── CodeEditorStatusBar.tsx  # Cursor/language/tab display
+│       ├── CodeEditorStatusBar.tsx     # Cursor/language/tab display
 │       └── index.ts
 ├── hooks/
-│   ├── use-codemirror.ts            # Core CM lifecycle + compartments
-│   └── use-dark-mode.ts            # Reactive prefers-color-scheme
+│   ├── use-codemirror.ts               # Core editor lifecycle
+│   └── use-dark-mode.ts               # Reactive prefers-color-scheme
 ├── languages/
-│   ├── registry.ts                  # Global language registry
-│   ├── builtin.ts                  # JS, TS, HTML, PHP registrations
-│   ├── types.ts                    # LanguageDefinition type
+│   ├── registry.ts                     # Global language registry
+│   ├── builtin.ts                     # JS, TS, HTML, PHP registrations
+│   ├── types.ts                       # LanguageDefinition type
 │   └── index.ts
 ├── themes/
-│   ├── registry.ts                  # Global theme registry
-│   ├── light.ts                    # Built-in light color scheme
-│   ├── dark.ts                     # Built-in dark color scheme
-│   ├── types.ts                    # ThemeDefinition type
+│   ├── registry.ts                     # Global theme registry
+│   ├── light.ts                       # Built-in light color scheme
+│   ├── dark.ts                        # Built-in dark color scheme
+│   ├── types.ts                       # ThemeDefinition type
 │   └── index.ts
-├── styles.css                      # Base CodeMirror structural styles
-└── index.ts                        # Public API
+├── styles.css                         # Base structural styles
+└── index.ts                           # Public API
 ```
-
-### Data Attributes
-
-| Attribute | Element |
-|-----------|---------|
-| `data-fancy-code-editor` | Root wrapper |
-| `data-fancy-code-toolbar` | Toolbar bar |
-| `data-fancy-code-toolbar-separator` | Toolbar separator |
-| `data-fancy-code-panel` | CodeMirror mount point |
-| `data-fancy-code-statusbar` | Status bar |
 
 ### Public Exports
 
@@ -388,12 +372,12 @@ Guidelines for AI agents (Claude Code, Copilot, etc.) working on this package.
 - Context is provided via `CodeEditorContext` and consumed with `useCodeEditor()`.
 - All root elements have `data-fancy-code-*` attributes for external CSS targeting.
 
-### CodeMirror Integration
+### Editor Engine
 
-- The `useCodemirror` hook manages the full `EditorView` lifecycle.
-- Uses `Compartment` from `@codemirror/state` for hot-swapping language, theme, line numbers, word wrap, tab size, read-only, placeholder, and height constraints.
+- The `useCodemirror` hook manages the editor lifecycle using CodeMirror 6.
+- Uses `Compartment` for hot-swapping language, theme, line numbers, word wrap, tab size, read-only, placeholder, and height constraints.
 - External value changes are synced via `isExternalUpdate` ref to prevent onChange loops.
-- SSR-safe: EditorView is only created inside `useEffect`.
+- SSR-safe: the editor is only created inside `useEffect`.
 
 ### Extension System
 
@@ -405,5 +389,5 @@ Guidelines for AI agents (Claude Code, Copilot, etc.) working on this package.
 
 - tsup handles the build — ESM, CJS, and `.d.ts` generation.
 - `react`, `react-dom`, and `@particle-academy/react-fancy` are external dependencies.
-- All CodeMirror packages are **bundled** (not external) so consumers don't need to install them.
+- All editor engine packages are **bundled** (not external) so consumers don't need to install them.
 - After any change, verify with `npm run build` from the monorepo root.

@@ -1,7 +1,7 @@
 {
   "name": "@particle-academy/fancy-code",
-  "version": "0.1.1",
-  "description": "Lightweight embedded code editor component built on CodeMirror 6",
+  "version": "0.1.2",
+  "description": "Lightweight embedded code editor with syntax highlighting and extensible language/theme registries",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
