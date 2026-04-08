@@ -210,25 +210,19 @@ Add languages beyond the built-ins using `registerLanguage`:
 
 ```tsx
 import { registerLanguage } from "@particle-academy/fancy-code";
+import type { Tokenizer } from "@particle-academy/fancy-code";
+
+const tokenizeRuby: Tokenizer = (source) => {
+  const tokens = [];
+  // Your regex-based tokenizer logic here
+  // See src/engine/tokenizers/javascript.ts for a full example
+  return tokens;
+};
 
 registerLanguage({
-  name: "Python",
-  aliases: ["py", "python"],
-  support: () => {
-    // Return a LanguageSupport instance
-    const { python } = require("@codemirror/lang-python");
-    return python();
-  },
-});
-
-// Lazy-loaded
-registerLanguage({
-  name: "Rust",
-  aliases: ["rs", "rust"],
-  support: async () => {
-    const { rust } = await import("@codemirror/lang-rust");
-    return rust();
-  },
+  name: "Ruby",
+  aliases: ["rb", "ruby"],
+  tokenize: tokenizeRuby,
 });
 ```
 
@@ -323,7 +317,7 @@ src/
 │       ├── CodeEditorStatusBar.tsx     # Cursor/language/tab display
 │       └── index.ts
 ├── hooks/
-│   ├── use-codemirror.ts               # Core editor lifecycle
+│   ├── use-editor-engine.ts            # Core editor lifecycle
 │   └── use-dark-mode.ts               # Reactive prefers-color-scheme
 ├── languages/
 │   ├── registry.ts                     # Global language registry
