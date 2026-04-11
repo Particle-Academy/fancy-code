@@ -83,7 +83,7 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
         )}
 
         {/* Editor area */}
-        <div className="relative min-w-0 flex-1">
+        <div className={cn("relative flex-1", wordWrap && "min-w-0")}>
           {/* Highlighted code overlay */}
           <pre
             className="pointer-events-none absolute inset-0 m-0 overflow-hidden border-none p-2.5 text-[13px] leading-[1.5]"
@@ -109,7 +109,10 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
           {/* Actual textarea for input */}
           <textarea
             ref={textareaRef}
-            className="relative m-0 block w-full resize-none border-none bg-transparent p-2.5 text-[13px] leading-[1.5] text-transparent outline-none"
+            className={cn(
+              "relative m-0 block resize-none border-none bg-transparent p-2.5 text-[13px] leading-[1.5] text-transparent outline-none",
+              wordWrap ? "w-full" : "min-w-full",
+            )}
             style={{
               caretColor: themeColors.cursorColor,
               minHeight: _minHeight ? _minHeight - 40 : 80,

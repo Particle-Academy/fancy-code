@@ -64,6 +64,7 @@ export function useEditorEngine({
   language,
   theme,
   readOnly,
+  wordWrap,
   tabSize,
   onCursorChange,
 }: UseEditorEngineOptions): UseEditorEngineReturn {
@@ -116,7 +117,15 @@ export function useEditorEngine({
     if (!ta) return;
     ta.style.height = "auto";
     ta.style.height = ta.scrollHeight + "px";
-  }, []);
+
+    if (!wordWrap) {
+      // Shrink to 0 to measure true content width, then expand
+      ta.style.width = "0";
+      ta.style.width = ta.scrollWidth + "px";
+    } else {
+      ta.style.width = "";
+    }
+  }, [wordWrap]);
 
   // Sync textarea value and auto-resize when value changes
   useEffect(() => {
