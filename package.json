@@ -2,6 +2,12 @@
   "name": "@particle-academy/fancy-code",
   "version": "0.4.3",
   "description": "Lightweight embedded code editor with syntax highlighting and extensible language/theme registries",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Particle-Academy/fancy-code.git"
+  },
+  "homepage": "https://github.com/Particle-Academy/fancy-code#readme",
+  "bugs": "https://github.com/Particle-Academy/fancy-code/issues",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -21,6 +27,7 @@
   },
   "files": [
     "dist",
+    "docs",
     "README.md"
   ],
   "scripts": {
