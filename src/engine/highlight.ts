@@ -12,6 +12,19 @@ function escapeHtml(text: string): string {
 }
 
 /**
+ * Validate a CSS color value. Allows hex (#abc, #abcdef, #abcdef00), rgb()/
+ * rgba()/hsl()/hsla() with safe characters, and bare CSS color keywords.
+ * Returns the color if safe, or "inherit" otherwise — preventing CSS
+ * injection via user-supplied theme values.
+ */
+const COLOR_RE = /^(#[0-9a-fA-F]{3,8}|(?:rgb|rgba|hsl|hsla)\([\d\s,.%/-]+\)|[a-zA-Z]+)$/;
+function safeColor(value: unknown): string {
+  return typeof value === "string" && COLOR_RE.test(value.trim())
+    ? value.trim()
+    : "inherit";
+}
+
+/**
  * Convert source code + tokens + theme colors into highlighted HTML.
  * Returns an HTML string with <span> elements for each token.
  */
@@ -44,7 +57,7 @@ export function highlightCode(source: string, tokens: Token[], colors: ThemeColo
     }
 
     const text = escapeHtml(source.slice(token.start, token.end));
-    const color = colorMap[token.type];
+    const color = safeColor(colorMap[token.type]);
     const style = token.type === "comment"
       ? `color:${color};font-style:italic`
       : `color:${color}`;
