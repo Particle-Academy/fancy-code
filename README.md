@@ -67,6 +67,19 @@ pnpm --filter @particle-academy/fancy-code clean    # Remove dist/
 - **Zero third-party dependencies** — custom engine, no Monaco / CodeMirror / Shiki
 - **IDE-ready** — pairs with `TreeNav` from `@particle-academy/react-fancy` for full IDE layouts; see [docs/CodeEditor.md](./docs/CodeEditor.md) for an example.
 
+## Inertia.js integration
+
+CodeEditor mounts its own DOM observers and is **not SSR-safe**. In an Inertia app, wrap with [`<FancyClientOnly>`](https://github.com/Particle-Academy/fancy-inertia/blob/main/docs/USAGE.md#fancyclientonly) from `@particle-academy/fancy-inertia`:
+
+```tsx
+import { FancyClientOnly } from "@particle-academy/fancy-inertia";
+import { CodeEditor } from "@particle-academy/fancy-code";
+
+<FancyClientOnly fallback={<div className="h-96 animate-pulse rounded bg-zinc-100" />}>
+  <CodeEditor value={code} onChange={setCode} language="typescript" />
+</FancyClientOnly>
+```
+
 ## License
 
 MIT
