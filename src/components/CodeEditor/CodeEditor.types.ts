@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, RefObject } from "react";
 import type { UseEditorEngineReturn } from "../../hooks/use-editor-engine";
 
 export interface CodeEditorProps {
@@ -67,6 +67,13 @@ export interface CodeEditorContextValue {
   cursorPosition: { line: number; col: number };
   /** Length of the current selection (0 if none) */
   selectionLength: number;
+  /**
+   * Ref to the underlying `<textarea>` element. Exposed so external
+   * widgets — e.g. `<InputTag>`'s `textareaAdapter` — can attach to
+   * the same input the editor renders into. Will be `null` before
+   * the editor has mounted.
+   */
+  textareaRef: RefObject<HTMLTextAreaElement | null>;
   /** Placeholder text */
   placeholder?: string;
   /** @internal */

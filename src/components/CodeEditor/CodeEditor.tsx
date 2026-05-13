@@ -115,6 +115,7 @@ function CodeEditorRoot({
       },
       cursorPosition,
       selectionLength,
+      textareaRef: engineReturn.textareaRef,
       placeholder,
       _engineReturn: engineReturn,
       _minHeight: minHeight,

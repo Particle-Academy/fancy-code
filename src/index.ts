@@ -18,3 +18,10 @@ export type { ThemeDefinition, ThemeColors } from "./themes";
 
 // Tokenizer types (for custom language authors)
 export type { Token, TokenType, Tokenizer } from "./engine/tokenizer";
+
+// InputTag glue — wires react-fancy's <InputTag> to the editor's textarea
+export {
+  useCodeEditorInputTagAdapter,
+  CodeEditorInputTag,
+  type CodeEditorInputTagProps,
+} from "./input-tag";
