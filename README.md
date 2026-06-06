@@ -1,5 +1,7 @@
 # @particle-academy/fancy-code
 
+[![Fancified](art/fancified.svg)](https://particle.academy)
+
 Lightweight embedded code editor with syntax highlighting, custom toolbar buttons, and extensible language and theme registries. Part of the `@particle-academy` component ecosystem.
 
 ## Installation
