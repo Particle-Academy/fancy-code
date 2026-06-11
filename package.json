@@ -1,6 +1,6 @@
 {
   "name": "@particle-academy/fancy-code",
-  "version": "0.4.7",
+  "version": "0.5.0",
   "description": "Lightweight embedded code editor with syntax highlighting and extensible language/theme registries",
   "repository": {
     "type": "git",

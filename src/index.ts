@@ -8,6 +8,13 @@ export type {
   CodeEditorStatusBarProps,
 } from "./components/CodeEditor";
 
+// MarkdownEditor — code editor (markdown highlighting) + optional live preview.
+export { MarkdownEditor } from "./components/MarkdownEditor";
+export type { MarkdownEditorProps, MarkdownEditorMode } from "./components/MarkdownEditor";
+// Dependency-free markdown → HTML renderer used by the preview pane (override-able).
+export { renderMarkdown } from "./engine/markdown-render";
+export { tokenizeMarkdown } from "./engine/tokenizers/markdown";
+
 // Language registration
 export { registerLanguage, getLanguage, getRegisteredLanguages } from "./languages";
 export type { LanguageDefinition } from "./languages";

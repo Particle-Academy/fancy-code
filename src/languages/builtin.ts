@@ -4,6 +4,13 @@ import { tokenizeHtml } from "../engine/tokenizers/html";
 import { tokenizePhp } from "../engine/tokenizers/php";
 import { tokenizePython } from "../engine/tokenizers/python";
 import { tokenizeGo } from "../engine/tokenizers/go";
+import { tokenizeMarkdown } from "../engine/tokenizers/markdown";
+
+registerLanguage({
+  name: "Markdown",
+  aliases: ["md", "markdown", "mkd"],
+  tokenize: tokenizeMarkdown,
+});
 
 registerLanguage({
   name: "JavaScript",
