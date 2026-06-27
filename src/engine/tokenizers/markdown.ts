@@ -55,6 +55,12 @@ export function tokenizeMarkdown(source: string): Token[] {
 
 /** Collect non-overlapping inline spans (code, emphasis, links) in one line. */
 function pushInline(line: string, base: number, out: Token[]): void {
+  // Cosmetic highlighting only. The inline patterns below necessarily
+  // backtrack, so skip pathologically long lines — this bounds total work to
+  // O(n) across the document and prevents superlinear (ReDoS) blow-up on
+  // adversarial input. Normal markdown lines are far below this threshold.
+  if (line.length > 5000) return;
+
   const spans: Token[] = [];
   const add = (type: TokenType, start: number, end: number) => {
     spans.push(tok(type, base + start, base + end));

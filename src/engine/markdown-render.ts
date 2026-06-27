@@ -14,13 +14,22 @@ function escapeHtml(s: string): string {
     .replace(/>/g, "&gt;");
 }
 
+/**
+ * Escape a value for use inside a double-quoted HTML attribute. Adds quote
+ * escaping on top of `escapeHtml`'s `&<>` so the value can't break out of the
+ * attribute. Apply to text that has already been `escapeHtml`-ed.
+ */
+function escapeAttr(s: string): string {
+  return s.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
 /** Inline spans — run on already-escaped text. */
 function inline(text: string): string {
   return text
     // images ![alt](src)
-    .replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, (_m, alt, src, title) => `<img src="${src}" alt="${alt}"${title ? ` title="${title}"` : ""}>`)
+    .replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, (_m, alt, src, title) => `<img src="${escapeAttr(src)}" alt="${escapeAttr(alt)}"${title ? ` title="${escapeAttr(title)}"` : ""}>`)
     // links [text](href)
-    .replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, (_m, t, href, title) => `<a href="${href}"${title ? ` title="${title}"` : ""} rel="noopener">${t}</a>`)
+    .replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, (_m, t, href, title) => `<a href="${escapeAttr(href)}"${title ? ` title="${escapeAttr(title)}"` : ""} rel="noopener">${t}</a>`)
     // inline code `code`
     .replace(/`([^`]+)`/g, (_m, c) => `<code>${c}</code>`)
     // bold **x** / __x__
@@ -66,7 +75,7 @@ export function renderMarkdown(markdown: string): string {
         i++;
       }
       i++; // consume closing fence
-      out.push(`<pre><code${lang ? ` class="language-${escapeHtml(lang)}"` : ""}>${escapeHtml(body.join("\n"))}</code></pre>`);
+      out.push(`<pre><code${lang ? ` class="language-${escapeAttr(escapeHtml(lang))}"` : ""}>${escapeHtml(body.join("\n"))}</code></pre>`);
       continue;
     }
 
