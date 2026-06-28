@@ -12,7 +12,7 @@ npm install @particle-academy/fancy-code
 # or: yarn add @particle-academy/fancy-code
 ```
 
-**Peer dependencies:** `react >= 18`, `react-dom >= 18`, `@particle-academy/react-fancy >= 1.5`
+**Peer dependencies:** `react >= 18`, `react-dom >= 18`, `@particle-academy/react-fancy >= 4.9` (the `FileViewer` delegates media to react-fancy's `<MediaViewer>`, added in 4.9)
 
 ## Setup
 
@@ -44,11 +44,38 @@ function App() {
 
 The component ships with no default border or rounding — add your own via `className` for standalone use, or embed directly into IDE layouts without visual conflicts.
 
+## Unified file viewer
+
+Showing arbitrary files from a tree? `FileViewer` renders text in the
+`CodeEditor` and delegates **media** (image / video / audio / PDF) to
+react-fancy's `<MediaViewer>` — so an image no longer renders as binary text.
+
+```tsx
+import { FileViewer } from "@particle-academy/fancy-code";
+
+// text → CodeEditor (read-only, language picked from the filename)
+<FileViewer filename="app.tsx" value={source} />
+
+// media → <MediaViewer> (pass the file URL as `src`)
+<FileViewer filename="logo.png" src={url} style={{ height: 360 }} />
+```
+
+Need to branch your own chrome (tabs, save buttons)? Call `resolveFileKind`
+yourself — it's the same text-vs-media decision `FileViewer` makes internally:
+
+```tsx
+import { resolveFileKind } from "@particle-academy/fancy-code";
+
+resolveFileKind({ filename: "logo.png" }); // { kind: "media", mediaKind: "image" }
+resolveFileKind({ filename: "app.tsx" });   // { kind: "text", language: "typescript" }
+```
+
 ## Documentation
 
 | Topic | Doc |
 |-------|-----|
 | Full component API (props, sub-components, `useCodeEditor` hook) | [docs/CodeEditor.md](./docs/CodeEditor.md) |
+| Unified file viewer (text + media), `resolveFileKind` | [docs/FileViewer.md](./docs/FileViewer.md) |
 | Built-in languages + registering custom ones | [docs/languages.md](./docs/languages.md) |
 | Built-in themes + custom theme registration | [docs/themes.md](./docs/themes.md) |
 

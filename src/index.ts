@@ -11,6 +11,13 @@ export type {
 // MarkdownEditor — code editor (markdown highlighting) + optional live preview.
 export { MarkdownEditor } from "./components/MarkdownEditor";
 export type { MarkdownEditorProps, MarkdownEditorMode } from "./components/MarkdownEditor";
+
+// FileViewer — unified viewer: CodeEditor for text, react-fancy's <MediaViewer>
+// for image/video/audio/PDF. resolveFileKind exposes the text-vs-media decision.
+export { FileViewer } from "./components/FileViewer";
+export type { FileViewerProps } from "./components/FileViewer";
+export { resolveFileKind, languageFromFilename } from "./file-type";
+export type { FileKind, ResolveFileKindInput } from "./file-type";
 // Dependency-free markdown → HTML renderer used by the preview pane (override-able).
 export { renderMarkdown } from "./engine/markdown-render";
 export { tokenizeMarkdown } from "./engine/tokenizers/markdown";

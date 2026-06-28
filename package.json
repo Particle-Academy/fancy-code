@@ -1,6 +1,6 @@
 {
   "name": "@particle-academy/fancy-code",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Lightweight embedded code editor with syntax highlighting and extensible language/theme registries",
   "repository": {
     "type": "git",
@@ -39,12 +39,12 @@
     "prepublishOnly": "tsup"
   },
   "peerDependencies": {
-    "@particle-academy/react-fancy": ">=2",
+    "@particle-academy/react-fancy": ">=4.9.0",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
-    "@particle-academy/react-fancy": "^4.0.0",
+    "@particle-academy/react-fancy": "^4.9.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "react": "^19.0.0",
