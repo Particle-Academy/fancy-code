@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback, useState, useMemo, type RefObject } fro
 import { getLanguage } from "../languages";
 import { getTheme } from "../themes";
 import { highlightCode } from "../engine/highlight";
+import { lineColumnToOffset } from "../engine/position";
 import type { ThemeColors } from "../themes/types";
 import type { Tokenizer } from "../engine/tokenizer";
 
@@ -31,6 +32,11 @@ export interface UseEditorEngineReturn {
   handleInput: () => void;
   handleScroll: () => void;
   handleSelect: () => void;
+  /**
+   * Place the caret on a 1-based `line` / `column` and scroll the editor so the
+   * line is centered in view. Out-of-range positions clamp to document bounds.
+   */
+  revealLine: (line: number, column?: number, opts?: { focus?: boolean }) => void;
   scrollTop: number;
   scrollLeft: number;
 }
@@ -173,6 +179,35 @@ export function useEditorEngine({
     setScrollLeft(ta.scrollLeft);
   }, []);
 
+  const revealLine = useCallback(
+    (line: number, column = 1, opts?: { focus?: boolean }) => {
+      const ta = textareaRef.current;
+      if (!ta) return;
+
+      const offset = lineColumnToOffset(ta.value, line, column);
+      if (opts?.focus) ta.focus();
+      ta.selectionStart = ta.selectionEnd = offset;
+      updateCursorInfo();
+
+      // Scroll the editor's scroll container (the panel) so the target line is
+      // centered. The textarea is auto-sized to fit its content, so the panel —
+      // not the textarea — is what scrolls.
+      const panel = ta.closest<HTMLElement>("[data-fancy-code-panel]");
+      if (!panel) return;
+      const cs = getComputedStyle(ta);
+      const lineHeight = parseFloat(cs.lineHeight) || 19.5;
+      const paddingTop = parseFloat(cs.paddingTop) || 0;
+      const lineIndex = (ta.value.slice(0, offset).match(/\n/g) || []).length; // clamped (targetLine - 1)
+      const textareaTopInPanel =
+        ta.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
+      const lineTop = textareaTopInPanel + paddingTop + lineIndex * lineHeight;
+      const target = lineTop - panel.clientHeight / 2 + lineHeight / 2;
+      const maxScroll = panel.scrollHeight - panel.clientHeight;
+      panel.scrollTop = Math.max(0, Math.min(target, maxScroll));
+    },
+    [updateCursorInfo],
+  );
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       if (readOnly) {
@@ -272,6 +307,7 @@ export function useEditorEngine({
     handleInput,
     handleScroll,
     handleSelect,
+    revealLine,
     scrollTop,
     scrollLeft,
   };

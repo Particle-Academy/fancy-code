@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, useCallback } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { cn, useControllableState } from "@particle-academy/react-fancy";
 import { CodeEditorContext } from "./CodeEditor.context";
 import { CodeEditorPanel } from "./CodeEditorPanel";
@@ -26,6 +26,8 @@ function CodeEditorRoot({
   placeholder,
   minHeight,
   maxHeight,
+  cursorLine,
+  cursorColumn,
 }: CodeEditorProps) {
   const [currentValue, setCurrentValue] = useControllableState(valueProp, defaultValue, onChange);
 
@@ -79,6 +81,15 @@ function CodeEditorRoot({
     },
   });
 
+  // Reveal + place the caret when cursorLine/cursorColumn change (and on mount).
+  // revealLine is stable, so this fires only on target change; it runs after the
+  // engine's value-sync effect, so the textarea is populated and sized first.
+  const { revealLine: revealLineImpl } = engineReturn;
+  useEffect(() => {
+    if (cursorLine == null) return;
+    revealLineImpl(cursorLine, cursorColumn ?? 1, { focus: false });
+  }, [cursorLine, cursorColumn, revealLineImpl]);
+
   const contextValue = useMemo<CodeEditorContextValue>(
     () => ({
       getValue: () => engineReturn.textareaRef.current?.value ?? currentValue,
@@ -100,6 +111,10 @@ function CodeEditorRoot({
         setCurrentValue(ta.value);
       },
       focus: () => engineReturn.textareaRef.current?.focus(),
+      revealLine: (line: number, column?: number) =>
+        engineReturn.revealLine(line, column ?? 1, { focus: true }),
+      setCursor: ({ line, column }: { line: number; column?: number }) =>
+        engineReturn.revealLine(line, column ?? 1, { focus: true }),
       language: currentLanguage,
       setLanguage,
       theme: resolvedTheme,

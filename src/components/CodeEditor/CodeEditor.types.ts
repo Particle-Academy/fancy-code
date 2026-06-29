@@ -30,6 +30,16 @@ export interface CodeEditorProps {
   minHeight?: number;
   /** Maximum height in px (scrolls beyond this) */
   maxHeight?: number;
+  /**
+   * 1-based line to reveal (scroll to + place the caret on). Applied on mount
+   * and whenever it (or `cursorColumn`) changes — so opening a file *at* a line,
+   * or re-targeting an already-open file, scrolls the line into view. Does not
+   * steal focus; call the imperative `revealLine`/`setCursor` (or `focus`) for
+   * that. Out-of-range values clamp to document bounds.
+   */
+  cursorLine?: number;
+  /** 1-based column for {@link cursorLine} (default 1). */
+  cursorColumn?: number;
 }
 
 export interface CodeEditorContextValue {
@@ -43,6 +53,13 @@ export interface CodeEditorContextValue {
   replaceSelection: (text: string) => void;
   /** Focus the editor */
   focus: () => void;
+  /**
+   * Scroll to + place the caret on a 1-based `line` (optional 1-based `column`),
+   * focusing the editor. Out-of-range positions clamp to document bounds.
+   */
+  revealLine: (line: number, column?: number) => void;
+  /** Place the caret at a 1-based `{ line, column }` and reveal it (focuses). */
+  setCursor: (pos: { line: number; column?: number }) => void;
   /** Current language name */
   language: string;
   /** Change the active language */
