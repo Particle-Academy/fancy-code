@@ -44,6 +44,26 @@ function App() {
 
 The component ships with no default border or rounding — add your own via `className` for standalone use, or embed directly into IDE layouts without visual conflicts.
 
+## Diff gutter
+
+Pass `diffBase` (the baseline document) and the line-number column shows live,
+VS Code-style change marks of the **current value vs that baseline** — a green
+bar for added lines, a blue bar for modified lines, and a red wedge where lines
+were deleted. Recomputed as the user types (line-level, cheap — the engine is
+[`@particle-academy/fancy-file-commons`](https://github.com/Particle-Academy/fancy-file-commons),
+the same core `fancy-diff` renders).
+
+```tsx
+<CodeEditor value={code} onChange={setCode} diffBase={savedCode} language="typescript">
+  <CodeEditor.Panel />
+</CodeEditor>
+```
+
+Totals are exposed on the context as `diffStats` (`{ added, modified, removed }`)
+for a status-bar chip or save indicator, and every marked row carries stable
+`data-diff` / `data-diff-deleted-above` handles. Themes may override the colors
+via `diffAdded` / `diffModified` / `diffRemoved`.
+
 ## Unified file viewer
 
 Showing arbitrary files from a tree? `FileViewer` renders text in the

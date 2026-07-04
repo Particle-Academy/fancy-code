@@ -8,6 +8,11 @@ export interface ThemeColors {
   activeLineBackground: string;
   selectionBackground: string;
   cursorColor: string;
+  // Diff gutter marks (optional — VS Code-convention fallbacks apply when
+  // omitted: green added, blue modified, red deleted).
+  diffAdded?: string;
+  diffModified?: string;
+  diffRemoved?: string;
   // Token colors
   keyword: string;
   string: string;

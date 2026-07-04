@@ -1,4 +1,5 @@
 import type { ReactNode, RefObject } from "react";
+import type { DiffAnnotations } from "@particle-academy/fancy-file-commons";
 import type { UseEditorEngineReturn } from "../../hooks/use-editor-engine";
 
 export interface CodeEditorProps {
@@ -40,6 +41,15 @@ export interface CodeEditorProps {
   cursorLine?: number;
   /** 1-based column for {@link cursorLine} (default 1). */
   cursorColumn?: number;
+  /**
+   * Baseline document for the diff gutter. When set, the line-number column
+   * shows per-line change marks of the CURRENT value against this baseline —
+   * VS Code convention: a green bar for added lines, a blue bar for modified
+   * lines, and a red wedge where lines were deleted. Recomputed live as the
+   * user types (line-level only — cheap). `null`/omitted disables the gutter
+   * marks. Requires `lineNumbers`.
+   */
+  diffBase?: string | null;
 }
 
 export interface CodeEditorContextValue {
@@ -93,6 +103,14 @@ export interface CodeEditorContextValue {
   textareaRef: RefObject<HTMLTextAreaElement | null>;
   /** Placeholder text */
   placeholder?: string;
+  /**
+   * Totals of the live diff against {@link CodeEditorProps.diffBase} —
+   * `{ added, modified, removed }` — or `null` when no baseline is set.
+   * Handy for a status-bar chip or a host's save indicator.
+   */
+  diffStats: { added: number; modified: number; removed: number } | null;
+  /** @internal — per-line gutter annotations for the diff marks. */
+  _diffAnnotations: DiffAnnotations | null;
   /** @internal */
   _engineReturn: UseEditorEngineReturn | null;
   /** @internal */

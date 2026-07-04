@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { cn, useControllableState } from "@particle-academy/react-fancy";
+import { annotateLines } from "@particle-academy/fancy-file-commons";
 import { CodeEditorContext } from "./CodeEditor.context";
 import { CodeEditorPanel } from "./CodeEditorPanel";
 import { CodeEditorToolbar } from "./CodeEditorToolbar";
@@ -28,8 +29,16 @@ function CodeEditorRoot({
   maxHeight,
   cursorLine,
   cursorColumn,
+  diffBase,
 }: CodeEditorProps) {
   const [currentValue, setCurrentValue] = useControllableState(valueProp, defaultValue, onChange);
+
+  // Diff gutter: per-line change marks of the current value vs the baseline.
+  // Line-level only (no intra-line segmentation), recomputed as the user types.
+  const diffAnnotations = useMemo(
+    () => (diffBase == null ? null : annotateLines(diffBase, currentValue)),
+    [diffBase, currentValue],
+  );
 
   // Reactive dark mode for "auto" theme
   const isDark = useDarkMode();
@@ -132,11 +141,19 @@ function CodeEditorRoot({
       selectionLength,
       textareaRef: engineReturn.textareaRef,
       placeholder,
+      diffStats: diffAnnotations
+        ? {
+            added: diffAnnotations.added,
+            modified: diffAnnotations.modified,
+            removed: diffAnnotations.removed,
+          }
+        : null,
+      _diffAnnotations: diffAnnotations,
       _engineReturn: engineReturn,
       _minHeight: minHeight,
       _maxHeight: maxHeight,
     }),
-    [engineReturn, currentValue, currentLanguage, setLanguage, resolvedTheme, readOnly, showLineNumbers, isWordWrap, tabSizeProp, cursorPosition, selectionLength, setCurrentValue, placeholder, minHeight, maxHeight],
+    [engineReturn, currentValue, currentLanguage, setLanguage, resolvedTheme, readOnly, showLineNumbers, isWordWrap, tabSizeProp, cursorPosition, selectionLength, setCurrentValue, placeholder, diffAnnotations, minHeight, maxHeight],
   );
 
   return (

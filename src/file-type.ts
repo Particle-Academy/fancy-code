@@ -1,4 +1,5 @@
 import { resolveMediaType, type MediaKind } from "@particle-academy/react-fancy";
+import { languageFromFilename } from "@particle-academy/fancy-file-commons";
 
 /**
  * The decision a file viewer makes about a file: render it as editable text, or
@@ -16,56 +17,10 @@ export interface ResolveFileKindInput {
   mime?: string;
 }
 
-/**
- * Filename/MIME extension → fancy-code language id (a registered alias). Only
- * languages with a tokenizer are mapped; anything else falls through to
- * `"plaintext"`, which renders as un-highlighted text. SVG is intentionally
- * absent — it resolves to a media image, not text.
- */
-const EXT_LANGUAGE: Record<string, string> = {
-  js: "javascript",
-  mjs: "javascript",
-  cjs: "javascript",
-  jsx: "javascript",
-  json: "javascript", // the JS tokenizer highlights JSON acceptably
-  jsonc: "javascript",
-  ts: "typescript",
-  mts: "typescript",
-  cts: "typescript",
-  tsx: "typescript",
-  html: "html",
-  htm: "html",
-  xml: "html",
-  xhtml: "html",
-  vue: "html",
-  php: "php",
-  phtml: "php",
-  py: "python",
-  pyw: "python",
-  go: "go",
-  md: "markdown",
-  markdown: "markdown",
-  mkd: "markdown",
-  mdx: "markdown",
-};
-
-/** Last path segment of a filename/URL, ignoring any query/hash. */
-function basename(filename: string): string {
-  return filename.split(/[?#]/, 1)[0].split(/[\\/]/).pop() ?? "";
-}
-
-/**
- * Resolve the fancy-code editor language for a filename. Returns `"plaintext"`
- * (no syntax highlighting) for unknown or extension-less files.
- */
-export function languageFromFilename(filename?: string): string {
-  if (!filename) return "plaintext";
-  const seg = basename(filename);
-  const dot = seg.lastIndexOf(".");
-  if (dot <= 0) return "plaintext"; // no extension, or a dotfile like `.gitignore`
-  const ext = seg.slice(dot + 1).toLowerCase();
-  return EXT_LANGUAGE[ext] ?? "plaintext";
-}
+// Filename → language now lives in @particle-academy/fancy-file-commons (the
+// shared core for the file packages — one EXT_LANGUAGE map suite-wide).
+// Re-exported so existing `fancy-code` imports keep working.
+export { languageFromFilename };
 
 /**
  * Decide whether a file is previewable media (image / video / audio / PDF) or

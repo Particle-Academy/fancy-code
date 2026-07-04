@@ -18,6 +18,16 @@ export { FileViewer } from "./components/FileViewer";
 export type { FileViewerProps } from "./components/FileViewer";
 export { resolveFileKind, languageFromFilename } from "./file-type";
 export type { FileKind, ResolveFileKindInput } from "./file-type";
+
+// Diff gutter (CodeEditor `diffBase` prop) — the pure mark resolvers, exported
+// for custom gutter surfaces + tests. Annotations come from fancy-file-commons.
+export {
+  gutterDiffMark,
+  hasDeletedAtEnd,
+  diffMarkColor,
+  diffRemovedColor,
+} from "./components/CodeEditor/diff-gutter";
+export type { GutterDiffMark } from "./components/CodeEditor/diff-gutter";
 // Dependency-free markdown → HTML renderer used by the preview pane (override-able).
 export { renderMarkdown } from "./engine/markdown-render";
 export { tokenizeMarkdown } from "./engine/tokenizers/markdown";
