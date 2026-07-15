@@ -1,27 +1,5 @@
-export type TokenType =
-  | "keyword"
-  | "string"
-  | "comment"
-  | "number"
-  | "operator"
-  | "tag"
-  | "attribute"
-  | "attributeValue"
-  | "punctuation"
-  | "function"
-  | "type"
-  | "variable"
-  | "plain";
-
-export interface Token {
-  type: TokenType;
-  start: number;
-  end: number;
-}
-
-export type Tokenizer = (source: string) => Token[];
-
-/** Create a token — avoids esbuild shorthand property minification bugs */
-export function tok(type: TokenType, s: number, e: number): Token {
-  return { type: type, start: s, end: e };
-}
+// The tokenizer primitives now live in @particle-academy/fancy-file-commons
+// (the shared pure core). Re-exported here so fancy-code's tokenizers and
+// engine keep their existing `../tokenizer` import paths unchanged.
+export type { Token, TokenType, Tokenizer } from "@particle-academy/fancy-file-commons";
+export { tok } from "@particle-academy/fancy-file-commons";

@@ -1,31 +1,10 @@
+import { DARK_COLORS } from "@particle-academy/fancy-file-commons";
 import { registerTheme } from "./registry";
 
+// The palette lives in commons; fancy-code wraps it into a named, registrable
+// theme for its IDE's theme picker + `theme="auto"` resolution.
 registerTheme({
   name: "dark",
   variant: "dark",
-  colors: {
-    background: "#18181b",
-    foreground: "#e4e4e7",
-    gutterBackground: "#18181b",
-    gutterForeground: "#52525b",
-    gutterBorder: "#27272a",
-    activeLineBackground: "#27272a",
-    selectionBackground: "#1e3a5f",
-    cursorColor: "#60a5fa",
-    diffAdded: "#3fb950",
-    diffModified: "#4184e4",
-    diffRemoved: "#f85149",
-    keyword: "#c084fc",
-    string: "#34d399",
-    comment: "#71717a",
-    number: "#fbbf24",
-    operator: "#22d3ee",
-    function: "#60a5fa",
-    type: "#fbbf24",
-    tag: "#f87171",
-    attribute: "#fbbf24",
-    attributeValue: "#34d399",
-    punctuation: "#a1a1aa",
-    variable: "#e4e4e7",
-  },
+  colors: DARK_COLORS,
 });

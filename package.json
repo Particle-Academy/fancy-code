@@ -1,6 +1,6 @@
 {
   "name": "@particle-academy/fancy-code",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Lightweight embedded code editor with syntax highlighting and extensible language/theme registries",
   "repository": {
     "type": "git",
@@ -67,7 +67,7 @@
     "src/themes/index.ts"
   ],
   "dependencies": {
-    "@particle-academy/fancy-file-commons": "^0.1.0"
+    "@particle-academy/fancy-file-commons": "^0.2.0"
   },
   "overrides": {
     "esbuild": "^0.28.1"

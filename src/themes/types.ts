@@ -1,32 +1,8 @@
-export interface ThemeColors {
-  // Editor chrome
-  background: string;
-  foreground: string;
-  gutterBackground: string;
-  gutterForeground: string;
-  gutterBorder: string;
-  activeLineBackground: string;
-  selectionBackground: string;
-  cursorColor: string;
-  // Diff gutter marks (optional — VS Code-convention fallbacks apply when
-  // omitted: green added, blue modified, red deleted).
-  diffAdded?: string;
-  diffModified?: string;
-  diffRemoved?: string;
-  // Token colors
-  keyword: string;
-  string: string;
-  comment: string;
-  number: string;
-  operator: string;
-  function: string;
-  type: string;
-  tag: string;
-  attribute: string;
-  attributeValue: string;
-  punctuation: string;
-  variable: string;
-}
+// `ThemeColors` (the token/chrome palette) is defined in
+// @particle-academy/fancy-file-commons and re-exported here. `ThemeDefinition`
+// — the named, registrable wrapper — stays local to fancy-code's theme registry.
+export type { ThemeColors } from "@particle-academy/fancy-file-commons";
+import type { ThemeColors } from "@particle-academy/fancy-file-commons";
 
 export interface ThemeDefinition {
   /** Unique theme name */
