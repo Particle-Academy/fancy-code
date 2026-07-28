@@ -14,6 +14,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **`CodeEditorPanel` crashed when the editor engine arrived after first
+  render.** `if (!engine) return null` sat above the `useMemo` that builds the
+  gutter, so a render without an engine ran zero hooks and the next ran one —
+  React desyncs on the changed count and throws from inside itself.
+  `_engineReturn` is typed `| null` and starts null, so any host rendering the
+  panel before the engine settles hit this.
+
+  **No action needed** — the fix is internal and the API is unchanged.
+
+### Added
+
+- `jsdom` as a devDependency, and the first component test in this package.
+  There was previously no way to render a component in a test here at all, which
+  is precisely how the bug above shipped.
+
 ### Changed
 
 - Widened the `@particle-academy/fancy-file-commons` requirement from `^0.2.0` to

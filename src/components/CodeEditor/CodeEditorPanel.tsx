@@ -21,26 +21,19 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
     _minHeight,
   } = useCodeEditor();
 
-  if (!engine) return null;
-
-  const {
-    textareaRef,
-    highlightedHtml,
-    lineCount,
-    activeLine,
-    themeColors,
-    handleKeyDown,
-    handleInput,
-    handleScroll,
-    handleSelect,
-    scrollTop,
-    scrollLeft,
-  } = engine;
-
-  const gutterWidth = lineNumbers ? `${Math.max(String(lineCount).length, 2) * 0.75 + 1.5}em` : "0";
-
+  // This `useMemo` MUST run before the `!engine` guard below it.
+  //
+  // The guard used to come first, so a render without an engine ran ZERO hooks
+  // and the next one ran one. React compares hook counts between renders, so
+  // that transition desyncs the hook order and throws from deep inside React,
+  // naming none of this code. `_engineReturn` is typed `| null` and starts null,
+  // so the transition is real rather than theoretical.
+  //
+  // Reading the engine's fields inside the callback (rather than destructuring
+  // above) is what lets the hook run unconditionally.
   const lineNumberElements = useMemo(() => {
-    if (!lineNumbers) return null;
+    if (!engine || !lineNumbers) return null;
+    const { themeColors, lineCount, activeLine } = engine;
     const removed = diffRemovedColor(themeColors);
     const lines = [];
     for (let i = 1; i <= lineCount; i++) {
@@ -110,7 +103,26 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
       );
     }
     return lines;
-  }, [lineNumbers, lineCount, activeLine, themeColors, diffAnnotations]);
+  }, [engine, lineNumbers, diffAnnotations]);
+
+  // Every hook is above this line.
+  if (!engine) return null;
+
+  const {
+    textareaRef,
+    highlightedHtml,
+    lineCount,
+    activeLine,
+    themeColors,
+    handleKeyDown,
+    handleInput,
+    handleScroll,
+    handleSelect,
+    scrollTop,
+    scrollLeft,
+  } = engine;
+
+  const gutterWidth = lineNumbers ? `${Math.max(String(lineCount).length, 2) * 0.75 + 1.5}em` : "0";
 
   const containerStyle: React.CSSProperties = {
     backgroundColor: themeColors.background,
