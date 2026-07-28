@@ -67,7 +67,7 @@
     "src/themes/index.ts"
   ],
   "dependencies": {
-    "@particle-academy/fancy-file-commons": "^0.2.0"
+    "@particle-academy/fancy-file-commons": ">=0.2 <2.0"
   },
   "overrides": {
     "esbuild": "^0.28.1"
