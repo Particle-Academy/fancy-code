@@ -1,6 +1,5 @@
-import { cn, useControllableState } from "@particle-academy/react-fancy";
+import { cn, ContentRenderer, useControllableState } from "@particle-academy/react-fancy";
 import { CodeEditor } from "../CodeEditor";
-import { renderMarkdown } from "../../engine/markdown-render";
 
 export type MarkdownEditorMode = "split" | "edit" | "preview";
 
@@ -26,13 +25,21 @@ export interface MarkdownEditorProps {
   wordWrap?: boolean;
   /** Placeholder shown when empty. */
   placeholder?: string;
-  /** Editor height bounds (px). */
+  /**
+   * Height bounds (px). `maxHeight` constrains the PREVIEW pane as well as the
+   * editor — it previously reached only the editor, so a long document rendered
+   * at full height instead of scrolling.
+   */
   minHeight?: number;
   maxHeight?: number;
   className?: string;
   /**
-   * Swap the markdown → HTML renderer used by the preview pane (e.g. a full
-   * CommonMark library). Defaults to the built-in lightweight renderer.
+   * Swap the markdown → HTML renderer used by the preview pane.
+   *
+   * Rarely needed now: the preview renders through react-fancy's
+   * `<ContentRenderer format="markdown">`, which is a full CommonMark + GFM
+   * parse. Supply this only to impose your own pipeline — the returned HTML is
+   * injected as-is, so it must already be sanitised.
    */
   renderPreview?: (markdown: string) => string;
 }
@@ -40,8 +47,9 @@ export interface MarkdownEditorProps {
 /**
  * A markdown-aware editor: a syntax-highlighted `CodeEditor` (the registered
  * `markdown` language) with an optional live preview pane. Controlled via
- * `value` + `onValueChange`. The preview renders with a small built-in
- * dependency-free renderer; pass `renderPreview` to use your own.
+ * `value` + `onValueChange`. The preview renders through react-fancy's
+ * `<ContentRenderer format="markdown">` — a full CommonMark + GFM parse,
+ * sanitised by default. Pass `renderPreview` to impose your own pipeline.
  *
  * ```tsx
  * <MarkdownEditor value={md} onValueChange={setMd} mode="split" minHeight={240} />
@@ -60,7 +68,7 @@ export function MarkdownEditor({
   minHeight,
   maxHeight,
   className,
-  renderPreview = renderMarkdown,
+  renderPreview,
 }: MarkdownEditorProps) {
   const [content, setContent] = useControllableState(value, defaultValue, onValueChange);
 
@@ -95,8 +103,21 @@ export function MarkdownEditor({
         <div
           data-fancy-markdown-preview=""
           className="fancy-md-preview"
-          dangerouslySetInnerHTML={{ __html: renderPreview(content) }}
-        />
+          style={maxHeight ? { maxHeight, overflowY: "auto" } : undefined}
+        >
+          {renderPreview ? (
+            // The host imposed its own pipeline; its HTML is injected as-is and
+            // is its own responsibility to sanitise.
+            <div dangerouslySetInnerHTML={{ __html: renderPreview(content) }} />
+          ) : (
+            // The kit's own renderer — a full CommonMark + GFM parse that
+            // sanitises by default. `marked` already sits in this tree as a
+            // react-fancy runtime dependency, so the built-in renderer this
+            // replaced was a second, weaker markdown implementation next to a
+            // complete one.
+            <ContentRenderer value={content} format="markdown" />
+          )}
+        </div>
       )}
     </div>
   );

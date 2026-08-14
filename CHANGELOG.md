@@ -14,6 +14,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.11.0] — 2026-08-14
+
+### Changed
+
+- **The `MarkdownEditor` preview now renders through react-fancy's `<ContentRenderer format="markdown">`** — a full CommonMark + GFM parse — instead of the small built-in renderer.
+
+  Reported by a consumer reviewing documents through this surface, and measured before changing anything: a GFM table collapsed into a single run-on `<p>` (no table support at all), a hard-wrapped blockquote became one `<blockquote>` per source line, and a wrapped list item's continuation escaped the `<ul>` to become a `<p>`. On a document hard-wrapped at ~95 characters that degrades *everything*, and reads as though the author wrote it badly. Their most important block — a claim/evidence/status table — was the worst rendered.
+
+  The fix adds **no dependency**. `marked` was already in this tree as a runtime dependency of react-fancy, which fancy-code already requires, so the built-in renderer was a second, weaker markdown implementation sitting next to a complete one. Output is sanitised by default, as before.
+
+  **What you must do:** nothing to install, and nothing if you already pass `renderPreview` — that still wins and is still injected as-is. If you style the preview, note the rendered HTML is now marked's output: real `<table>`/`<thead>`/`<td>`, one `<blockquote>` per quote, and `<p>` inside `<blockquote>`. Selectors written against the old flattened markup may need updating.
+
+  `renderMarkdown` is unchanged and still exported for direct use; it is simply no longer the preview default.
+
+### Fixed
+
+- **`maxHeight` now constrains the preview pane.** It was passed only to the editor, so a long document rendered at full height instead of scrolling. The preview gets `maxHeight` + `overflow-y: auto` when the prop is set.
+
 ## [0.10.0] — 2026-08-07
 
 ### Changed
