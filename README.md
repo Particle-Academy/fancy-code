@@ -14,6 +14,35 @@ npm install @particle-academy/fancy-code
 
 **Peer dependencies:** `react >= 18`, `react-dom >= 18`, `@particle-academy/react-fancy >= 4.9` (the `FileViewer` delegates media to react-fancy's `<MediaViewer>`, added in 4.9)
 
+## Which version range to depend on
+
+**Use a caret. `^0.11.0` is correct here, and it is deliberate.**
+
+```jsonc
+"@particle-academy/fancy-code": "^0.11.0"
+```
+
+This package is **pre-1.0, and breaking changes land in MINOR releases** — see
+the note at the top of [`CHANGELOG.md`](./CHANGELOG.md). A caret on a `0.x` locks
+the minor (npm reads `^0.11.0` as `>=0.11.0 <0.12.0`), so it gives you patches and
+holds you at a surface you have already integrated against. That is the right
+default when the next minor may change something under you.
+
+**Moving up a minor is a deliberate act.** Read that version's `CHANGELOG.md`
+entry before you do — breaking entries say what a consumer must actually DO, and
+about half of what reads as breaking needs no action at all.
+
+> **A note on the rest of the suite.** Some Fancy packages recommend an open
+> `>=X <2.0` range instead. That is not an inconsistency: those packages carry a
+> **runtime compatibility check** that fails loudly when a consumer is out of
+> step — `fancy-connector-core`'s `CONNECTOR_API_VERSION` is the example — which
+> is a stronger guarantee than a caret and makes the caret unnecessary. This
+> package has no such check, so the caret is doing real work.
+>
+> The rule inside the suite differs again: first-party packages depend on each
+> other with an open range because they are **released and tested together** at a
+> kit version. A consumer is not, which is why the advice here is not the same.
+
 ## Setup
 
 Add the package styles to your main CSS (Tailwind v4 scans via `@source`):
