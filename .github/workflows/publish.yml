@@ -100,7 +100,11 @@ jobs:
           "
 
       - name: Install
-        run: npm install --no-audit --no-fund
+        # Same install as ci.yml. Without --legacy-peer-deps and with no lockfile,
+        # the runner's npm 10 crashes resolving vitest 4's peers ("Cannot read
+        # properties of null (reading 'edgesOut')"), so a tag would fail here
+        # after CI passed on the same commit. It crashed five sibling repos' CI.
+        run: npm install --no-audit --no-fund --legacy-peer-deps
 
       - name: Build
         run: npm run build
