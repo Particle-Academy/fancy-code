@@ -12,7 +12,7 @@ npm install @particle-academy/fancy-code
 # or: yarn add @particle-academy/fancy-code
 ```
 
-**Peer dependencies:** `react >= 18`, `react-dom >= 18`, `@particle-academy/react-fancy >= 4.9` (the `FileViewer` delegates media to react-fancy's `<MediaViewer>`, added in 4.9)
+**Peer dependencies:** `react ^19.0.0`, `react-dom ^19.0.0`, `@particle-academy/react-fancy >= 4.9` (the `FileViewer` delegates media to react-fancy's `<MediaViewer>`, added in 4.9)
 
 ## Which version range to depend on
 
