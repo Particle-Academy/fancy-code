@@ -55,7 +55,7 @@
     "tsup": "^8.5.0",
     "typescript": "^5.8.0",
     "typescript-eslint": "^8.65.0",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.11"
   },
   "publishConfig": {
     "access": "public"
@@ -74,7 +74,9 @@
     "@particle-academy/fancy-file-commons": ">=0.2 <2.0"
   },
   "overrides": {
-    "esbuild": "^0.28.1"
+    "esbuild": "^0.28.1",
+    "brace-expansion": "^5.0.12",
+    "undici": "^8.11.2"
   },
   "engines": {
     "node": ">=22"
