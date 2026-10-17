@@ -32,6 +32,19 @@ export interface FileViewerProps {
   lineNumbers?: boolean;
   /** Wrap long lines in the text editor (default `false`). */
   wordWrap?: boolean;
+  /**
+   * 1-based line to land on: scrolled to the middle of the view, caret placed,
+   * and highlighted. Applied on mount and again whenever it changes, so
+   * re-targeting an open file scrolls again. Text files only; does not steal focus.
+   */
+  line?: number;
+  /** 1-based column for {@link line} (default 1). */
+  column?: number;
+  /**
+   * Lines to highlight. Defaults to `[line]` when `line` is set; pass your own
+   * (a range, several hits) to override, or `[]` to land without highlighting.
+   */
+  highlightLines?: readonly number[];
   /** Editor height bounds (px). */
   minHeight?: number;
   maxHeight?: number;

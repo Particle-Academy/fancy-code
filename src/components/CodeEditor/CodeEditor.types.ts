@@ -42,6 +42,12 @@ export interface CodeEditorProps {
   /** 1-based column for {@link cursorLine} (default 1). */
   cursorColumn?: number;
   /**
+   * 1-based lines to mark with a full-width band — "here is the line you were
+   * sent to". Purely visual and independent of the caret; lines outside the
+   * document are ignored. Sized for unwrapped lines, as the gutter is.
+   */
+  highlightLines?: readonly number[];
+  /**
    * Baseline document for the diff gutter. When set, the line-number column
    * shows per-line change marks of the CURRENT value against this baseline —
    * VS Code convention: a green bar for added lines, a blue bar for modified
@@ -117,6 +123,8 @@ export interface CodeEditorContextValue {
   _minHeight?: number;
   /** @internal */
   _maxHeight?: number;
+  /** @internal — lines to band; see {@link CodeEditorProps.highlightLines}. */
+  _highlightLines?: readonly number[];
 }
 
 export interface CodeEditorToolbarProps {

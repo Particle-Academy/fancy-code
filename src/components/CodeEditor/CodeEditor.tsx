@@ -30,6 +30,7 @@ function CodeEditorRoot({
   cursorLine,
   cursorColumn,
   diffBase,
+  highlightLines,
 }: CodeEditorProps) {
   const [currentValue, setCurrentValue] = useControllableState(valueProp, defaultValue, onChange);
 
@@ -152,8 +153,9 @@ function CodeEditorRoot({
       _engineReturn: engineReturn,
       _minHeight: minHeight,
       _maxHeight: maxHeight,
+      _highlightLines: highlightLines,
     }),
-    [engineReturn, currentValue, currentLanguage, setLanguage, resolvedTheme, readOnly, showLineNumbers, isWordWrap, tabSizeProp, cursorPosition, selectionLength, setCurrentValue, placeholder, diffAnnotations, minHeight, maxHeight],
+    [engineReturn, currentValue, currentLanguage, setLanguage, resolvedTheme, readOnly, showLineNumbers, isWordWrap, tabSizeProp, cursorPosition, selectionLength, setCurrentValue, placeholder, diffAnnotations, minHeight, maxHeight, highlightLines],
   );
 
   return (

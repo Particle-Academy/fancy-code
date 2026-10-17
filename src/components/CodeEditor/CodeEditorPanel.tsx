@@ -19,6 +19,7 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
     _diffAnnotations: diffAnnotations,
     _maxHeight,
     _minHeight,
+    _highlightLines: highlightLines,
   } = useCodeEditor();
 
   // This `useMemo` MUST run before the `!engine` guard below it.
@@ -35,6 +36,7 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
     if (!engine || !lineNumbers) return null;
     const { themeColors, lineCount, activeLine } = engine;
     const removed = diffRemovedColor(themeColors);
+    const highlighted = new Set(highlightLines ?? []);
     const lines = [];
     for (let i = 1; i <= lineCount; i++) {
       const mark = gutterDiffMark(diffAnnotations, i);
@@ -45,8 +47,9 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
           data-diff-deleted-above={mark?.deletedAbove ? "" : undefined}
           style={{
             position: "relative",
-            color: i === activeLine ? themeColors.foreground : themeColors.gutterForeground,
+            color: i === activeLine || highlighted.has(i) ? themeColors.foreground : themeColors.gutterForeground,
             backgroundColor: i === activeLine ? themeColors.activeLineBackground : undefined,
+            fontWeight: highlighted.has(i) ? 600 : undefined,
           }}
           className="pr-3 text-right text-[13px] leading-[1.5] select-none"
         >
@@ -103,7 +106,7 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
       );
     }
     return lines;
-  }, [engine, lineNumbers, diffAnnotations]);
+  }, [engine, lineNumbers, diffAnnotations, highlightLines]);
 
   // Every hook is above this line.
   if (!engine) return null;
@@ -156,6 +159,28 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
 
         {/* Editor area */}
         <div className={cn("relative flex-1", wordWrap && "min-w-0")}>
+          {/*
+            Line bands — "here is the line you were sent to". Behind the code, and
+            placed in em so they track the 13px / 1.5 line grid the gutter uses;
+            0.625rem is the editor's top padding (p-2.5).
+          */}
+          {(highlightLines ?? [])
+            .filter((n) => Number.isInteger(n) && n >= 1 && n <= lineCount)
+            .map((n) => (
+              <div
+                key={`highlight-${n}`}
+                data-fancy-code-highlight-line={n}
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 text-[13px] leading-[1.5]"
+                style={{
+                  top: `calc(0.625rem + ${(n - 1) * 1.5}em)`,
+                  height: "1.5em",
+                  backgroundColor: themeColors.selectionBackground,
+                  opacity: 0.55,
+                }}
+              />
+            ))}
+
           {/* Highlighted code overlay */}
           <pre
             className="pointer-events-none absolute inset-0 m-0 overflow-hidden border-none p-2.5 text-[13px] leading-[1.5]"

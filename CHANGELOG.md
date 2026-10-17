@@ -14,6 +14,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-10-17
+
+### Added
+
+- **`<FileViewer line={42}>` lands on a line**: scrolled to the middle of the
+  view, caret placed, and highlighted — on mount and again whenever `line`
+  changes, so re-targeting an open file scrolls again. `column` places the caret
+  within it. Text files only; it does not steal focus.
+
+  Asked for by Genie 2, whose `openFileForUser(path, line)` now opens files in its
+  own FileViewer panel. `CodeEditor` could already reveal a line (`cursorLine`);
+  `FileViewer` never passed one through, and nothing marked the line on arrival.
+
+- **`highlightLines` on `FileViewer` and `CodeEditor`** draws a full-width band
+  behind each listed line and bolds its gutter number. `FileViewer` highlights
+  `[line]` by default; pass a range or several hits to override, or `[]` to land
+  without a highlight. Lines outside the document are ignored. Measured in a real
+  browser: the band lines up with the gutter row to the pixel. Sized for
+  unwrapped lines, as the gutter is.
+
+  Handle: `data-fancy-code-highlight-line={n}`.
+
+**What you must DO: nothing.** Both props are optional; without them the viewer
+renders exactly as before.
+
 ### Fixed
 
 - **`CHANGELOG.md` is now in the published tarball.** `files` did not whitelist it, so npm never shipped it — and this package puts breaking changes in MINOR releases and tells you in the README to read the entry before taking one. The instruction existed for the author, who has the file, and not for the consumer, who is the only one being instructed. Nothing for you to do; the file simply arrives from this release on.

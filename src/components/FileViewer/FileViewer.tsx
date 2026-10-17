@@ -30,6 +30,9 @@ export function FileViewer({
   fileKind,
   lineNumbers = true,
   wordWrap = false,
+  line,
+  column,
+  highlightLines,
   minHeight,
   maxHeight,
   mediaProps,
@@ -80,6 +83,11 @@ export function FileViewer({
         wordWrap={wordWrap}
         minHeight={minHeight}
         maxHeight={maxHeight}
+        // CodeEditor already reveals `cursorLine` on mount and on change; this
+        // component never passed one through, so a viewer could not land anywhere.
+        cursorLine={line}
+        cursorColumn={column}
+        highlightLines={highlightLines ?? (line != null ? [line] : undefined)}
       >
         <CodeEditor.Panel />
       </CodeEditor>
