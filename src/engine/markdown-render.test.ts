@@ -19,6 +19,47 @@ describe("renderMarkdown", () => {
     expect(renderMarkdown("![alt](/img.png)")).toContain('<img src="/img.png" alt="alt">');
   });
 
+  // The preview is inserted with innerHTML, where React's javascript: URL guard
+  // does not reach. escapeAttr kept a URL inside its attribute but never looked
+  // at the scheme, so `[x](javascript:...)` was a live script link in the preview
+  // of any consumer showing markdown it did not write.
+  describe("refuses a URL scheme that can run script", () => {
+    const tab = String.fromCharCode(9);
+    const ctrl = String.fromCharCode(1);
+    const hostile = [
+      "javascript:alert(1)",
+      "JaVaScRiPt:alert(1)",
+      `java${tab}script:alert(1)`,
+      `${ctrl}javascript:alert(1)`,
+      "vbscript:msgbox(1)",
+      "data:text/html,<script>alert(1)</script>",
+    ];
+
+    for (const url of hostile) {
+      it(`link: ${JSON.stringify(url)}`, () => {
+        const html = renderMarkdown(`[click](${url})`);
+        expect(html).not.toMatch(/<a /);
+        expect(html).toContain("click");
+      });
+
+      it(`image: ${JSON.stringify(url)}`, () => {
+        const html = renderMarkdown(`![pic](${url})`);
+        expect(html).not.toMatch(/<img /);
+        expect(html).toContain("pic");
+      });
+    }
+
+    it("still links http(s), mailto, anchors and relative paths", () => {
+      for (const ok of ["https://x.test/a", "http://x.test", "mailto:a@x.test", "#top", "/docs/a", "docs/a.md", "../up"]) {
+        expect(renderMarkdown(`[t](${ok})`)).toContain(`<a href="${ok}"`);
+      }
+    });
+
+    it("still shows raster data: images", () => {
+      expect(renderMarkdown("![p](data:image/png;base64,AAAA)")).toContain('<img src="data:image/png;base64,AAAA"');
+    });
+  });
+
   it("renders a fenced code block with a language class and escaped body", () => {
     const html = renderMarkdown("```ts\nconst a = 1 < 2;\n```");
     expect(html).toContain('<pre><code class="language-ts">');
