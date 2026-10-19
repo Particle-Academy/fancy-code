@@ -14,6 +14,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.12.1] - 2026-10-18
+
+### Security
+
+- **`<MarkdownEditor>`'s preview no longer renders a link or image whose URL
+  can run script.** The preview is built as an HTML string and inserted with
+  `innerHTML`, where React's `javascript:` guard does not apply. URLs were kept
+  inside their attribute but their scheme was never checked, so
+  `[x](javascript:...)` became a live script link in the preview, in the page's
+  own origin. A link now needs a relative URL or `http`, `https`, `mailto` or
+  `tel`; an image needs a relative URL, `http(s)`, or a raster
+  `data:image/...`. Anything else renders as its text (a link) or its alt text
+  (an image). The scheme is read the way a browser reads it: case-insensitive,
+  with leading control characters and embedded tabs and newlines ignored.
+  **Upgrade if any markdown you preview was written by someone else**, an agent
+  included. Nothing else changes. Found while auditing the viewers fancy-labs
+  uses to show agent-written documents.
+
 ## [0.12.0] - 2026-10-17
 
 ### Added
