@@ -14,7 +14,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
-## [0.9.2] — 2026-10-18
+## [0.9.3] — 2026-10-18
+
+The 0.9.2 fix below, actually published. **0.9.2 was tagged but never reached
+npm**: the publish workflow's install step crashed on the runner's npm 10 (an
+arborist peer-set bug). It now installs with npm 11, the version it already
+published with. This line also publishes under the `maint-0.4` dist-tag, so
+`latest` stays on the current line.
+
+## [0.9.2] — 2026-10-18 (tagged, never published)
 
 ### Security
 

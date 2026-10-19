@@ -58,8 +58,11 @@ jobs:
             fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
           "
 
+      # npm 11, not the runner's 10.x: npm 9/10 crash on this branch's tree
+      # ("Cannot read properties of null (reading 'edgesOut')", an arborist
+      # peer-set bug) and npm 11 resolves it cleanly. v0.9.2 died here.
       - name: Install
-        run: npm install --no-audit --no-fund
+        run: npx -y npm@11.18.0 install --no-audit --no-fund
 
       - name: Build
         run: npm run build
