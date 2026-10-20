@@ -95,6 +95,24 @@ describe("FileViewer documents", () => {
   });
 });
 
+describe("FileViewer media", () => {
+  it.each([
+    ["chart.png", true],
+    ["report.pdf", true],
+  ])("frames %s", (filename) => {
+    const host = mount(<FileViewer filename={filename} src={`/files/${filename}`} />);
+    expect(host.querySelector("[data-react-fancy-faux-client]")).not.toBeNull();
+    expect(host.querySelector("[data-react-fancy-faux-client-fullscreen]")).not.toBeNull();
+  });
+
+  it("lets the caller turn the frame off", () => {
+    const host = mount(
+      <FileViewer filename="chart.png" src="/files/chart.png" mediaProps={{ imageProps: { frame: false } }} />,
+    );
+    expect(host.querySelector("[data-react-fancy-faux-client]")).toBeNull();
+  });
+});
+
 describe("FileViewer Office files", () => {
   it.each([
     ["report.docx", "docx"],

@@ -14,6 +14,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-10-19
+
+### Changed
+
+- **Images and PDFs in `FileViewer` sit in the `FauxClient` frame**, like
+  documents: an image gets the frame's zoom bar (driving its own pan/zoom) and
+  full screen; a PDF gets full screen, with zoom left to the browser's PDF
+  toolbar, and its file name in the address bar. Revealed on hover.
+  **What to do:** nothing to keep the new look. To turn it off, pass
+  `mediaProps={{ imageProps: { frame: false } }}` (or `pdfProps`).
+- **Requires react-fancy 5.49.0 or later** (peer `>=5.49.0 <6.0.0`).
+
 ## [0.13.0] - 2026-10-19
 
 ### Added

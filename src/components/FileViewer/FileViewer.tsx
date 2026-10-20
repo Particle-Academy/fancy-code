@@ -87,6 +87,10 @@ export function FileViewer({
     // Image / video / PDF fill the sized wrapper so a height set on FileViewer
     // reaches the viewer; audio is a fixed-height card and shouldn't stretch.
     const { className: mediaClassName, ...restMediaProps } = mediaProps ?? {};
+    // Images and PDFs carry the FauxClient frame every file viewer does; a
+    // caller can still pass `frame: false` through `mediaProps`.
+    restMediaProps.imageProps = { frame: true, frameProps, ...restMediaProps.imageProps };
+    restMediaProps.pdfProps = { frame: true, frameProps, ...restMediaProps.pdfProps };
     const fill = resolved.mediaKind !== "audio";
     return (
       <div
