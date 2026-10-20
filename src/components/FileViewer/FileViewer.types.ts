@@ -62,6 +62,12 @@ export interface FileViewerProps {
    * and full screen, revealed on hover): `variant`, a controlled `zoom`, …
    */
   frameProps?: Partial<FauxClientProps>;
+  /**
+   * An Office file's contents, already read on the server (dark-slide /
+   * holy-sheet / last-word), for the viewer registered with
+   * `registerOfficeViewer`. Preferred over reading `src` in the browser.
+   */
+  document?: unknown;
   className?: string;
   style?: CSSProperties;
 }

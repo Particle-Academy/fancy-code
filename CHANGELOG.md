@@ -14,6 +14,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-10-19
+
+### Added
+
+- **Office files open in the kit's own viewers.** `registerOfficeViewer(kind,
+  View, { read })` wires a viewer for `pptx`, `xlsx` or `docx` into
+  `FileViewer`, one line per format at app start:
+
+  ```ts
+  registerOfficeViewer("pptx", DeckFileView, { read: (b) => new PptxReader().read(b) });
+  ```
+
+  `DeckFileView` ships in fancy-slides and `WorkbookFileView` in fancy-sheets.
+  The viewer gets the file's contents in this order: the new `document` prop,
+  the contents the app's server already read (preferred); else the file at
+  `src`, read in the browser by the registered `read`; else the download card
+  as before. A file the reader cannot open shows the reason beside the
+  download. A registry rather than an import so fancy-code never depends on the
+  slide or sheet packages, and an app with neither cannot fail to build on them.
+  **Nothing to do** unless you want Office previews: unregistered formats behave
+  exactly as in 0.14.
+
 ## [0.14.0] - 2026-10-19
 
 ### Changed

@@ -17,7 +17,9 @@ export type { MarkdownEditorProps, MarkdownEditorMode } from "./components/Markd
 export { FileViewer } from "./components/FileViewer";
 export type { FileViewerProps } from "./components/FileViewer";
 export { resolveFileKind, languageFromFilename } from "./file-type";
-export type { FileKind, ResolveFileKindInput } from "./file-type";
+export type { FileKind, ResolveFileKindInput, DocumentFormat, OfficeKind } from "./file-type";
+export { registerOfficeViewer, officeViewerFor, clearOfficeViewers } from "./office-viewers";
+export type { OfficeViewerProps, OfficeViewerOptions } from "./office-viewers";
 
 // Diff gutter (CodeEditor `diffBase` prop) — the pure mark resolvers, exported
 // for custom gutter surfaces + tests. Annotations come from fancy-file-commons.

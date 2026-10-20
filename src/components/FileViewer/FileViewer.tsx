@@ -1,6 +1,8 @@
-import { cn, ContentRenderer, FauxClient, MediaViewer } from "@particle-academy/react-fancy";
+import { useEffect, useState } from "react";
+import { Callout, cn, ContentRenderer, FauxClient, MediaViewer } from "@particle-academy/react-fancy";
+import { officeViewerFor } from "../../office-viewers";
 import { CodeEditor } from "../CodeEditor";
-import { resolveFileKind } from "../../file-type";
+import { resolveFileKind, type OfficeKind } from "../../file-type";
 import type { FileViewerProps } from "./FileViewer.types";
 
 /**
@@ -38,6 +40,7 @@ export function FileViewer({
   mediaProps,
   view = "rendered",
   frameProps,
+  document,
   className,
   style,
 }: FileViewerProps) {
@@ -78,7 +81,14 @@ export function FileViewer({
         className={cn("overflow-hidden", className)}
         style={style}
       >
-        <MediaViewer src={src ?? ""} mime={mime} alt={filename} className="h-full w-full" />
+        <OfficeFile
+          kind={resolved.officeKind}
+          document={document}
+          src={src}
+          mime={mime}
+          filename={filename}
+          frameProps={frameProps}
+        />
       </div>
     );
   }
@@ -142,6 +152,84 @@ export function FileViewer({
 }
 
 FileViewer.displayName = "FileViewer";
+
+type OfficeState =
+  | { status: "idle" }
+  | { status: "reading" }
+  | { status: "read"; document: unknown }
+  | { status: "failed"; message: string };
+
+/**
+ * An Office file in the viewer the app registered for its format.
+ *
+ * Where the contents come from, in order (owner, 2026-10-19: "both, server
+ * preferred"): the `document` the app's server already read; else the file at
+ * `src`, read in the browser by the reader the app registered; else the
+ * download card. A file our reader cannot open says so, beside the download,
+ * rather than showing an empty viewer.
+ */
+function OfficeFile({
+  kind,
+  document,
+  src,
+  mime,
+  filename,
+  frameProps,
+}: {
+  kind: OfficeKind;
+  document: unknown;
+  src?: string;
+  mime?: string;
+  filename?: string;
+  frameProps?: FileViewerProps["frameProps"];
+}) {
+  const registration = officeViewerFor(kind);
+  const read = registration?.read;
+  const [state, setState] = useState<OfficeState>({ status: "idle" });
+
+  useEffect(() => {
+    if (!registration || document !== undefined || !src || !read) return;
+    let live = true;
+    setState({ status: "reading" });
+    fetch(src)
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`The file could not be fetched (${response.status}).`);
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        const doc = read(bytes);
+        if (live) setState({ status: "read", document: doc });
+      })
+      .catch((error: unknown) => {
+        if (live) setState({ status: "failed", message: error instanceof Error ? error.message : String(error) });
+      });
+
+    return () => {
+      live = false;
+    };
+  }, [registration, document, src, read]);
+
+  const fallback = <MediaViewer src={src ?? ""} mime={mime} alt={filename} className="h-full w-full" />;
+
+  if (!registration) return fallback;
+
+  const View = registration.View;
+  if (document !== undefined) return <View document={document} filename={filename} frameProps={frameProps} />;
+  if (state.status === "read") return <View document={state.document} filename={filename} frameProps={frameProps} />;
+  if (state.status === "reading") {
+    return <div className="flex h-full items-center justify-center p-6 text-sm text-zinc-500">Opening {filename ?? "the file"}…</div>;
+  }
+  if (state.status === "failed") {
+    return (
+      <div className="flex h-full flex-col gap-2 p-2">
+        <Callout color="red">
+          {filename ?? "This file"} could not be opened: {state.message}
+        </Callout>
+        {fallback}
+      </div>
+    );
+  }
+
+  return fallback;
+}
 
 const ESCAPES: Record<string, string> = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 
