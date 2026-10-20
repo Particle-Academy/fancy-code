@@ -14,6 +14,37 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-10-19
+
+### Added
+
+- **Documents render as a reader sees them.** `FileViewer` shows Markdown, HTML
+  and plain text through react-fancy's `ContentRenderer`, sanitised (a file is
+  untrusted), in the `FauxClient` frame every file viewer now carries: zoom and
+  full screen, revealed on hover. Plain text keeps its paragraphs and line
+  breaks and is escaped, so `*x*` stays asterisks. `view="source"` shows the
+  source in the code editor instead, as do editing (`readOnly={false}`) and
+  landing on a `line`. `frameProps` reaches the frame.
+- **Office files are recognised.** `.docx`, `.xlsx` and `.pptx` (by extension
+  or MIME type) resolve to `{ kind: "office", officeKind }`. They show
+  MediaViewer's no-preview card with a download until their viewers are wired
+  in. They used to be handed to the code editor as text.
+
+### Changed
+
+- **BREAKING:** a `.md`, `.html` or `.txt` file in `FileViewer` is rendered,
+  not shown as source. **What to do:** to keep the source, pass
+  `view="source"`. A viewer that lands on a `line` (a link into a file) already
+  shows the source, so file links need nothing.
+- **BREAKING (types):** `FileKind` gains `{ kind: "document"; format; language }`
+  and `{ kind: "office"; officeKind }`. **What to do:** only if you `switch` on
+  `resolveFileKind(...).kind` exhaustively: add the two cases, or a `default`.
+  `notes.txt` now resolves to `document`, not `text`.
+- The extension decides over a generic MIME type: a host that serves `app.ts`
+  as `text/plain` still gets the code editor.
+- **Requires react-fancy 5.48.1 or later** (peer `>=5.48.1 <6.0.0`, was
+  `>=4.9.0`), for the frame and for the sanitiser that strips `<title>`.
+
 ## [0.12.1] - 2026-10-18
 
 ### Security

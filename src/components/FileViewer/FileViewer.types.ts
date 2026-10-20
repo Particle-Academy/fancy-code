@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import type { MediaViewerProps } from "@particle-academy/react-fancy";
+import type { FauxClientProps, MediaViewerProps } from "@particle-academy/react-fancy";
 import type { FileKind } from "../../file-type";
 
 export interface FileViewerProps {
@@ -50,6 +50,18 @@ export interface FileViewerProps {
   maxHeight?: number;
   /** Extra props forwarded to `<MediaViewer>` for media files. */
   mediaProps?: Partial<Omit<MediaViewerProps, "src" | "mime" | "alt">>;
+  /**
+   * How a **document** (Markdown, HTML, plain text) is shown. `"rendered"`
+   * (default): as a reader sees it, through react-fancy's `ContentRenderer`
+   * (sanitised; a file is untrusted). `"source"`: in the code editor. Editing
+   * (`readOnly={false}`) and landing on a `line` always show the source.
+   */
+  view?: "rendered" | "source";
+  /**
+   * Passed to the react-fancy `FauxClient` frame a rendered file sits in (zoom
+   * and full screen, revealed on hover): `variant`, a controlled `zoom`, …
+   */
+  frameProps?: Partial<FauxClientProps>;
   className?: string;
   style?: CSSProperties;
 }

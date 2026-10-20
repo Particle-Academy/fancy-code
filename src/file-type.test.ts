@@ -57,10 +57,28 @@ describe("resolveFileKind", () => {
       kind: "text",
       language: "typescript",
     });
-    expect(resolveFileKind({ filename: "notes.txt" })).toEqual({
-      kind: "text",
-      language: "plaintext",
-    });
+  });
+
+  it("classifies documents, which a viewer renders rather than shows as source", () => {
+    expect(resolveFileKind({ filename: "notes.txt" })).toEqual({ kind: "document", format: "text", language: "plaintext" });
+    expect(resolveFileKind({ filename: "README.md" })).toEqual({ kind: "document", format: "markdown", language: "markdown" });
+    expect(resolveFileKind({ filename: "page.html" })).toEqual({ kind: "document", format: "html", language: "html" });
+    expect(resolveFileKind({ mime: "text/markdown" })).toMatchObject({ kind: "document", format: "markdown" });
+  });
+
+  it("keeps a code file as code when a host labels it text/plain", () => {
+    // Hosts often serve source as text/plain; the extension knows better.
+    expect(resolveFileKind({ filename: "app.ts", mime: "text/plain" })).toEqual({ kind: "text", language: "typescript" });
+    expect(resolveFileKind({ filename: "README.md", mime: "text/plain" })).toMatchObject({ kind: "document", format: "markdown" });
+  });
+
+  it("classifies Office files instead of calling them text", () => {
+    expect(resolveFileKind({ filename: "a.docx" })).toEqual({ kind: "office", officeKind: "docx" });
+    expect(resolveFileKind({ filename: "a.xlsx" })).toEqual({ kind: "office", officeKind: "xlsx" });
+    expect(resolveFileKind({ filename: "a.pptx" })).toEqual({ kind: "office", officeKind: "pptx" });
+    expect(
+      resolveFileKind({ mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }),
+    ).toEqual({ kind: "office", officeKind: "docx" });
   });
 
   it("prefers MIME over the filename", () => {
