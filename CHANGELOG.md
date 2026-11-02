@@ -14,6 +14,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-11-02
+
 ### Added
 
 - **Shell and dotenv highlighting.** `language="shell"` (aliases `sh`, `bash`, `zsh`) and `language="dotenv"` (alias `env`) are registered built-ins, and `FileViewer` now highlights `.sh` / `.bash` / `.zsh` files, shell rc files and `.env` / `.env.*` files, which it showed as plain text before.
