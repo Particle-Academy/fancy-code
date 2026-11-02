@@ -140,7 +140,7 @@ pnpm --filter @particle-academy/fancy-code clean    # Remove dist/
 ## At a Glance
 
 - **5 public exports** — `CodeEditor` (+ `Toolbar`, `Toolbar.Separator`, `Panel`, `StatusBar`) and the `useCodeEditor` hook
-- **6 built-in languages** — JavaScript, TypeScript, HTML, PHP, Python, Go
+- **9 built-in languages** — JavaScript, TypeScript, HTML, PHP, Python, Go, Markdown, Shell, Dotenv (grammars shared from `@particle-academy/fancy-file-commons`)
 - **3 built-in themes** — `light`, `dark`, `auto` (follows `prefers-color-scheme`)
 - **Zero third-party dependencies** — custom engine, no Monaco / CodeMirror / Shiki
 - **IDE-ready** — pairs with `TreeNav` from `@particle-academy/react-fancy` for full IDE layouts; see [docs/CodeEditor.md](./docs/CodeEditor.md) for an example.

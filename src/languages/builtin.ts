@@ -1,10 +1,16 @@
 import { registerLanguage } from "./registry";
-import { tokenizeJavaScript } from "../engine/tokenizers/javascript";
-import { tokenizeHtml } from "../engine/tokenizers/html";
-import { tokenizePhp } from "../engine/tokenizers/php";
-import { tokenizePython } from "../engine/tokenizers/python";
-import { tokenizeGo } from "../engine/tokenizers/go";
-import { tokenizeMarkdown } from "../engine/tokenizers/markdown";
+// Every grammar lives in @particle-academy/fancy-file-commons, shared with
+// react-fancy's CodeBlock / CodeView; fancy-code only registers them.
+import {
+  tokenizeJavaScript,
+  tokenizeHtml,
+  tokenizePhp,
+  tokenizePython,
+  tokenizeGo,
+  tokenizeMarkdown,
+  tokenizeShell,
+  tokenizeDotenv,
+} from "@particle-academy/fancy-file-commons";
 
 registerLanguage({
   name: "Markdown",
@@ -46,4 +52,16 @@ registerLanguage({
   name: "Go",
   aliases: ["go", "golang"],
   tokenize: tokenizeGo,
+});
+
+registerLanguage({
+  name: "Shell",
+  aliases: ["sh", "bash", "zsh", "shell"],
+  tokenize: tokenizeShell,
+});
+
+registerLanguage({
+  name: "Dotenv",
+  aliases: ["env", "dotenv"],
+  tokenize: tokenizeDotenv,
 });

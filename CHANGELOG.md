@@ -14,6 +14,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **Shell and dotenv highlighting.** `language="shell"` (aliases `sh`, `bash`, `zsh`) and `language="dotenv"` (alias `env`) are registered built-ins, and `FileViewer` now highlights `.sh` / `.bash` / `.zsh` files, shell rc files and `.env` / `.env.*` files, which it showed as plain text before.
+
+### Changed
+
+- **The tokenizers now come from `@particle-academy/fancy-file-commons`.** fancy-code's own copies of the JavaScript/TypeScript, PHP, Python, Go and Markdown grammars moved there unchanged (react-fancy's `CodeBlock` and `CodeView` now use the same ones), and fancy-code registers the shared functions. Highlighting is identical. `tokenizeMarkdown` is still exported from this package.
+- **The `@particle-academy/fancy-file-commons` range floor rose from `>=0.2` to `>=0.4`** (still `<2.0`): 0.4 is the first release that ships these grammars. npm installs it for you. **Consumer action:** none.
+
+### Fixed
+
+- **PHP with an unterminated `<!--` before a `<?php` tag no longer shows text twice.** The fix is in fancy-file-commons' `highlightCode`, which now trims a token that overlaps the one before it.
+
 ## [0.15.1] - 2026-11-01
 
 ### Changed

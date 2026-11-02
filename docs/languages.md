@@ -1,6 +1,6 @@
 # Languages
 
-The editor ships with six built-in language tokenizers. Registering new languages is a single function call.
+The editor ships with nine built-in languages. Their tokenizers live in `@particle-academy/fancy-file-commons`, the same grammars react-fancy's `CodeBlock` and `CodeView` use, so a snippet highlights the same way everywhere. Registering new languages is a single function call.
 
 ## Built-in Languages
 
@@ -12,6 +12,9 @@ The editor ships with six built-in language tokenizers. Registering new language
 | PHP | `"php"` | — |
 | Python | `"python"` | `"py"` |
 | Go | `"go"` | `"golang"` |
+| Markdown | `"markdown"` | `"md"`, `"mkd"` |
+| Shell | `"shell"` | `"sh"`, `"bash"`, `"zsh"` |
+| Dotenv | `"dotenv"` | `"env"` |
 
 All built-in languages are auto-registered on import of `@particle-academy/fancy-code`. Use them by passing the name to the `language` prop:
 

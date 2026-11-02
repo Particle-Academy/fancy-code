@@ -32,7 +32,7 @@ export {
 export type { GutterDiffMark } from "./components/CodeEditor/diff-gutter";
 // Dependency-free markdown → HTML renderer used by the preview pane (override-able).
 export { renderMarkdown } from "./engine/markdown-render";
-export { tokenizeMarkdown } from "./engine/tokenizers/markdown";
+export { tokenizeMarkdown } from "@particle-academy/fancy-file-commons";
 
 // Language registration
 export { registerLanguage, getLanguage, getRegisteredLanguages } from "./languages";
