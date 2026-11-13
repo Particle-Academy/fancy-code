@@ -42,7 +42,7 @@ All three sub-components are optional — omit any to render a minimal editor.
 | readOnly | `boolean` | `false` | Disable editing |
 | lineNumbers | `boolean` | `true` | Show the gutter with line numbers |
 | wordWrap | `boolean` | `false` | Wrap long lines instead of horizontal scroll |
-| tabSize | `number` | `2` | Number of spaces per tab |
+| tabSize | `number` | `2` | Number of spaces per tab (see [Keyboard](#keyboard)) |
 | placeholder | `string` | - | Shown when the document is empty |
 | minHeight | `number` | - | Minimum height in px |
 | maxHeight | `number` | - | Maximum height in px (scrolls beyond) |
@@ -126,6 +126,21 @@ const [code, setCode] = useState("");
   <CodeEditor.Panel />
 </CodeEditor>
 ```
+
+## Keyboard
+
+The editor never traps keyboard focus (WCAG 2.1.2):
+
+- **Tab is armed by an edit.** Tabbing into the editor and pressing Tab again
+  moves focus on, like any other control. Once you edit (type, paste, cut,
+  Enter) in that focus session, Tab inserts `tabSize` spaces (or indents the
+  selected lines) and Shift+Tab dedents.
+- **Escape disarms.** After Escape, the next Tab leaves the editor. Blurring
+  the editor disarms too, so every new visit starts unarmed.
+- **Read-only editors** (`readOnly`, and `FileViewer`) never intercept keys:
+  arrows, Home/End, Page Up/Down, copy and Tab / Shift+Tab all behave natively.
+- The editing textarea shows the kit focus ring (`--fancy-focus` /
+  `--fancy-focus-dark`) when focused from the keyboard.
 
 ## Read-Only Display
 

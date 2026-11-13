@@ -30,6 +30,11 @@ export interface UseEditorEngineReturn {
   themeColors: ThemeColors;
   handleKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   handleInput: () => void;
+  /**
+   * Ends the focus session: disarms Tab-indent so the next Tab into the editor
+   * moves focus rather than indenting. Wire to the textarea's `onBlur`.
+   */
+  handleBlur: () => void;
   handleScroll: () => void;
   handleSelect: () => void;
   /**
@@ -83,6 +88,11 @@ export function useEditorEngine({
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [activeLine, setActiveLine] = useState(1);
+
+  // "Armed" Tab (WCAG 2.1.2, no keyboard trap): Tab / Shift+Tab indent and
+  // dedent only after the user has edited in the current focus session.
+  // Escape and blur disarm. A ref, not state: it never affects rendering.
+  const tabArmedRef = useRef(false);
 
   // Resolve theme colors
   const themeColors = useMemo<ThemeColors>(() => {
@@ -163,6 +173,9 @@ export function useEditorEngine({
   const handleInput = useCallback(() => {
     const ta = textareaRef.current;
     if (!ta) return;
+    // An edit (typing, paste, cut, drop, IME) arms Tab-indent for this focus
+    // session.
+    tabArmedRef.current = true;
     onChangeRef.current?.(ta.value);
     autoResize();
     updateCursorInfo();
@@ -208,15 +221,29 @@ export function useEditorEngine({
     [updateCursorInfo],
   );
 
+  const handleBlur = useCallback(() => {
+    // Leaving the editor ends the focus session: the next Tab in moves on.
+    tabArmedRef.current = false;
+  }, []);
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       if (readOnly) {
-        // Allow copy shortcuts in read-only mode
-        if (e.key === "c" && (e.metaKey || e.ctrlKey)) return;
-        if (e.key === "a" && (e.metaKey || e.ctrlKey)) return;
-        e.preventDefault();
+        // The textarea's own `readOnly` attribute already refuses edits. Every
+        // other key — Tab / Shift+Tab out, caret and navigation keys, copy —
+        // must reach the browser, or focus can never leave (WCAG 2.1.2).
         return;
       }
+
+      // Escape disarms Tab-indent, so the next Tab moves focus out.
+      if (e.key === "Escape") {
+        tabArmedRef.current = false;
+        return;
+      }
+
+      // Tab only indents once the user has edited in this focus session.
+      // Until then it moves focus like any other control (no keyboard trap).
+      if (e.key === "Tab" && !tabArmedRef.current) return;
 
       // Tab key — insert spaces
       if (e.key === "Tab") {
@@ -273,6 +300,7 @@ export function useEditorEngine({
       // Enter — auto-indent
       if (e.key === "Enter") {
         e.preventDefault();
+        tabArmedRef.current = true;
         const ta = e.currentTarget;
         const start = ta.selectionStart;
         const end = ta.selectionEnd;
@@ -305,6 +333,7 @@ export function useEditorEngine({
     themeColors,
     handleKeyDown,
     handleInput,
+    handleBlur,
     handleScroll,
     handleSelect,
     revealLine,

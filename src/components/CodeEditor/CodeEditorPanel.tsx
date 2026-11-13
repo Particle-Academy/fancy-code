@@ -120,6 +120,7 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
     themeColors,
     handleKeyDown,
     handleInput,
+    handleBlur,
     handleScroll,
     handleSelect,
     scrollTop,
@@ -211,8 +212,12 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
             aria-label={aria?.["aria-label"]}
             aria-labelledby={aria?.["aria-labelledby"]}
             aria-describedby={aria?.["aria-describedby"]}
+            // The focus ring sits on the textarea itself: it is the element that
+            // holds focus, and a ring on a wrapper is invisible to a checker
+            // (and to anyone who reads focus from the focused element).
             className={cn(
-              "relative m-0 block resize-none border-none bg-transparent p-2.5 text-[13px] leading-[1.5] text-transparent outline-none",
+              "relative m-0 block resize-none border-none bg-transparent p-2.5 text-[13px] leading-[1.5] text-transparent",
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[color:var(--fancy-focus,var(--color-blue-500))] dark:focus-visible:ring-[color:var(--fancy-focus-dark,var(--color-blue-400))]",
               wordWrap ? "w-full" : "min-w-full",
             )}
             style={{
@@ -229,6 +234,7 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
             readOnly={readOnly}
             onKeyDown={handleKeyDown}
             onInput={handleInput}
+            onBlur={handleBlur}
             onScroll={handleScroll}
             onSelect={handleSelect}
             onClick={handleSelect}

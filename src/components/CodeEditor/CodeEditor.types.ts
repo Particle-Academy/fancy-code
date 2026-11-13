@@ -17,13 +17,22 @@ export interface CodeEditorProps {
   onLanguageChange?: (lang: string) => void;
   /** Theme name: "light", "dark", "auto", or a custom registered name (default: "auto") */
   theme?: string;
-  /** Prevent editing (default: false) */
+  /**
+   * Prevent editing (default: false). Read-only editors still take every
+   * navigation key, and Tab / Shift+Tab move focus out.
+   */
   readOnly?: boolean;
   /** Show line numbers (default: true) */
   lineNumbers?: boolean;
   /** Enable word wrap (default: false) */
   wordWrap?: boolean;
-  /** Tab size in spaces (default: 2) */
+  /**
+   * Tab size in spaces (default: 2).
+   *
+   * Tab / Shift+Tab indent and dedent only once the user has edited in the
+   * current focus session; until then Tab moves focus like any other control,
+   * so keyboard users are never trapped (WCAG 2.1.2). Escape and blur disarm.
+   */
   tabSize?: number;
   /** Placeholder shown when empty */
   placeholder?: string;

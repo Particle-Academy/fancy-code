@@ -23,6 +23,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- **The editing textarea of `CodeEditor`, `FileViewer` and `MarkdownEditor`
+  shows a focus ring.** It was `outline-none` with nothing in its place, so a
+  keyboard user could not see where focus was. It now carries the kit ring
+  (`focus-visible:ring-2 ring-inset`, `--fancy-focus` / `--fancy-focus-dark`) on
+  the textarea itself. Consumers do nothing.
+- **`FileViewer` (and any `readOnly` editor) no longer traps keyboard focus.**
+  Its key handler called `preventDefault` on every key except copy and
+  select-all, Tab included, so focus could never leave and the caret could not
+  move. Read-only now intercepts nothing; the textarea's `readOnly` attribute
+  already refuses edits.
+- **Editable `CodeEditor` and `MarkdownEditor` no longer trap keyboard focus
+  (WCAG 2.1.2).** Tab always inserted indentation, so tabbing in meant never
+  tabbing out. Tab / Shift+Tab now indent and dedent only once you have edited
+  in the current focus session (typed, pasted, pressed Enter); until then Tab
+  moves focus on. Escape disarms, so the next Tab leaves; blur disarms too.
+  **Behaviour change:** a Tab pressed straight after focusing the editor, with
+  no edit yet, now moves focus instead of indenting. Nothing to do unless you
+  relied on that; type first, and Tab indents as before.
 - **`CodeEditor`, `FileViewer` and `MarkdownEditor` can be named, and are named
   by default** (axe `label`, critical, lab run 601, K28). The `<textarea>` a
   person types into had no accessible name and none of the three accepted one.
