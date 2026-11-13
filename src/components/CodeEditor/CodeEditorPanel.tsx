@@ -20,6 +20,7 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
     _maxHeight,
     _minHeight,
     _highlightLines: highlightLines,
+    _aria: aria,
   } = useCodeEditor();
 
   // This `useMemo` MUST run before the `!engine` guard below it.
@@ -206,6 +207,10 @@ export function CodeEditorPanel({ className }: CodeEditorPanelProps) {
           {/* Actual textarea for input */}
           <textarea
             ref={textareaRef}
+            // The name lands HERE, on the element a person types into.
+            aria-label={aria?.["aria-label"]}
+            aria-labelledby={aria?.["aria-labelledby"]}
+            aria-describedby={aria?.["aria-describedby"]}
             className={cn(
               "relative m-0 block resize-none border-none bg-transparent p-2.5 text-[13px] leading-[1.5] text-transparent outline-none",
               wordWrap ? "w-full" : "min-w-full",

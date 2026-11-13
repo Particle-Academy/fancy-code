@@ -1,9 +1,14 @@
 import { cn, ContentRenderer, useControllableState } from "@particle-academy/react-fancy";
 import { CodeEditor } from "../CodeEditor";
+import type { EditorAriaProps } from "../CodeEditor/CodeEditor.types";
 
 export type MarkdownEditorMode = "split" | "edit" | "preview";
 
-export interface MarkdownEditorProps {
+/**
+ * `aria-label` / `aria-labelledby` / `aria-describedby` name the editing
+ * textarea. Default name: "Markdown editor".
+ */
+export interface MarkdownEditorProps extends EditorAriaProps {
   /** Controlled markdown value. */
   value?: string;
   /** Initial value (uncontrolled). */
@@ -69,6 +74,9 @@ export function MarkdownEditor({
   maxHeight,
   className,
   renderPreview,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
 }: MarkdownEditorProps) {
   const [content, setContent] = useControllableState(value, defaultValue, onValueChange);
 
@@ -94,6 +102,9 @@ export function MarkdownEditor({
             placeholder={placeholder}
             minHeight={minHeight}
             maxHeight={maxHeight}
+            aria-label={ariaLabel ?? "Markdown editor"}
+            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
           >
             <CodeEditor.Panel />
           </CodeEditor>

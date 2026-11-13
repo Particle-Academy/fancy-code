@@ -43,6 +43,9 @@ export function FileViewer({
   document,
   className,
   style,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
 }: FileViewerProps) {
   const resolved = fileKind ?? resolveFileKind({ filename, mime });
 
@@ -144,6 +147,9 @@ export function FileViewer({
         cursorLine={line}
         cursorColumn={column}
         highlightLines={highlightLines ?? (line != null ? [line] : undefined)}
+        aria-label={ariaLabel ?? filename ?? "File contents"}
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
       >
         <CodeEditor.Panel />
       </CodeEditor>

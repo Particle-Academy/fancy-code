@@ -21,6 +21,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   when the fancy-labs lab has certified that exact version and commit. Consumers
   do nothing; this changes how releases are cut, not what the package does.
 
+### Fixed
+
+- **`CodeEditor`, `FileViewer` and `MarkdownEditor` can be named, and are named
+  by default** (axe `label`, critical, lab run 601, K28). The `<textarea>` a
+  person types into had no accessible name and none of the three accepted one.
+  Each now takes `aria-label`, `aria-labelledby` and `aria-describedby`, and
+  puts them on that textarea, not on a wrapper. Defaults: "Code editor",
+  the `filename` (else "File contents") for `FileViewer`, and "Markdown
+  editor". A `aria-labelledby` wins and suppresses the default label. Nothing
+  to do on upgrade; pass a name that says what the field is for, where you can.
+
 ## [0.16.0] - 2026-11-02
 
 ### Added

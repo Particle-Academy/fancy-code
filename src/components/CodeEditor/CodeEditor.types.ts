@@ -56,7 +56,20 @@ export interface CodeEditorProps {
    * marks. Requires `lineNumbers`.
    */
   diffBase?: string | null;
+  /**
+   * Accessible name of the editing surface. Lands on the `<textarea>` a person
+   * types into, not on a wrapper. Default "Code editor"; ignored when
+   * `aria-labelledby` is set.
+   */
+  "aria-label"?: string;
+  /** Id(s) of the element(s) naming the editing surface. Wins over `aria-label`. */
+  "aria-labelledby"?: string;
+  /** Id(s) of the element(s) describing the editing surface. */
+  "aria-describedby"?: string;
 }
+
+/** The accessible-name props every editor forwards to its textarea. */
+export type EditorAriaProps = Pick<CodeEditorProps, "aria-label" | "aria-labelledby" | "aria-describedby">;
 
 export interface CodeEditorContextValue {
   /** Get the current document text */
@@ -125,6 +138,8 @@ export interface CodeEditorContextValue {
   _maxHeight?: number;
   /** @internal — lines to band; see {@link CodeEditorProps.highlightLines}. */
   _highlightLines?: readonly number[];
+  /** @internal — accessible-name attributes for the textarea. */
+  _aria?: { "aria-label"?: string; "aria-labelledby"?: string; "aria-describedby"?: string };
 }
 
 export interface CodeEditorToolbarProps {

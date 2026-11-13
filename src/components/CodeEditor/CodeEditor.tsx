@@ -31,7 +31,20 @@ function CodeEditorRoot({
   cursorColumn,
   diffBase,
   highlightLines,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
 }: CodeEditorProps) {
+  // The textarea's name. A labelledby wins, so no competing default is added;
+  // otherwise it is never left unnamed (axe `label`, critical).
+  const aria = useMemo(
+    () => ({
+      "aria-label": ariaLabelledBy ? undefined : (ariaLabel ?? "Code editor"),
+      "aria-labelledby": ariaLabelledBy,
+      "aria-describedby": ariaDescribedBy,
+    }),
+    [ariaLabel, ariaLabelledBy, ariaDescribedBy],
+  );
   const [currentValue, setCurrentValue] = useControllableState(valueProp, defaultValue, onChange);
 
   // Diff gutter: per-line change marks of the current value vs the baseline.
@@ -154,8 +167,9 @@ function CodeEditorRoot({
       _minHeight: minHeight,
       _maxHeight: maxHeight,
       _highlightLines: highlightLines,
+      _aria: aria,
     }),
-    [engineReturn, currentValue, currentLanguage, setLanguage, resolvedTheme, readOnly, showLineNumbers, isWordWrap, tabSizeProp, cursorPosition, selectionLength, setCurrentValue, placeholder, diffAnnotations, minHeight, maxHeight, highlightLines],
+    [engineReturn, currentValue, currentLanguage, setLanguage, resolvedTheme, readOnly, showLineNumbers, isWordWrap, tabSizeProp, cursorPosition, selectionLength, setCurrentValue, placeholder, diffAnnotations, minHeight, maxHeight, highlightLines, aria],
   );
 
   return (

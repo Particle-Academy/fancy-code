@@ -1,8 +1,13 @@
 import type { CSSProperties } from "react";
 import type { FauxClientProps, MediaViewerProps } from "@particle-academy/react-fancy";
 import type { FileKind } from "../../file-type";
+import type { EditorAriaProps } from "../CodeEditor/CodeEditor.types";
 
-export interface FileViewerProps {
+/**
+ * `aria-label` / `aria-labelledby` / `aria-describedby` name the source view's
+ * textarea. Default name: the `filename`, else "File contents".
+ */
+export interface FileViewerProps extends EditorAriaProps {
   /**
    * File name or path — used to detect the file kind / editor language, and as
    * a label / alt text. Pass `mime` too when you have it (it's preferred).
