@@ -24,6 +24,8 @@ export interface UseEditorEngineOptions {
 
 export interface UseEditorEngineReturn {
   textareaRef: RefObject<HTMLTextAreaElement | null>;
+  /** The text being edited. The panel measures soft-wrapped rows from it. */
+  value: string;
   highlightedHtml: string;
   lineCount: number;
   activeLine: number;
@@ -327,6 +329,7 @@ export function useEditorEngine({
 
   return {
     textareaRef,
+    value,
     highlightedHtml,
     lineCount,
     activeLine,

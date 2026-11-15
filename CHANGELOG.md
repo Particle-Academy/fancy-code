@@ -14,6 +14,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.17.1] - 2026-11-14
+
+### Fixed
+
+- **A soft-wrapped line keeps one gutter number in `<CodeEditor wordWrap>`.**
+  The gutter drew one fixed-height row per line while the textarea wrapped a
+  long line over several rows, so each number below a long line sat beside the
+  wrong row, and the drift grew with every wrapped line. The panel now measures
+  how many rows each line takes, using a hidden, unselectable copy of the text
+  laid out like the textarea. A wrapped line gets one number, its continuation
+  rows stay blank, and the numbers below it match the real lines. It re-measures
+  when the text changes, when the pane is resized, and when
+  `toggleWordWrap()` from `useCodeEditor()` turns wrap on or off. `highlightLines`
+  bands follow the same rows. The wrap is still soft, so copying a wrapped line
+  adds no newline. Consumers do nothing. Gutter rows also gain a
+  `data-fancy-code-gutter-line` handle, and the gutter gains
+  `data-fancy-code-gutter`.
+
 ## [0.17.0] - 2026-11-13
 
 ### Changed
