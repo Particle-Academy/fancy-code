@@ -129,10 +129,13 @@ export function FileViewer({
     <div
       data-fancy-file-viewer=""
       data-kind="text"
-      className={className}
+      // One growing flex column down to the panel, so a height set on FileViewer
+      // fills with the editor's own background instead of stopping at the last line.
+      className={cn("flex flex-col", className)}
       style={style}
     >
       <CodeEditor
+        className="flex min-h-0 flex-1 flex-col"
         value={value}
         onChange={readOnly ? undefined : onChange}
         language={resolved.language}
@@ -151,7 +154,7 @@ export function FileViewer({
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}
       >
-        <CodeEditor.Panel />
+        <CodeEditor.Panel className="min-h-0 flex-1" />
       </CodeEditor>
     </div>
   );

@@ -14,6 +14,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.17.2] - 2026-11-16
+
+### Fixed
+
+- **A text file fills a sized `<FileViewer>`.** Give FileViewer a height (a
+  `style`, or a class) and the code editor now fills it, gutter and background
+  included, the way an image, PDF or video already did. Before, the editor
+  stopped after the file's last line and the rest of the box showed whatever was
+  behind it. An unsized FileViewer still sizes to its content, and
+  `minHeight` / `maxHeight` behave as before. Nothing to do.
+
 ### Changed
 
 - Rebranded the display name to Fancy Dev Kit (README and package description). Package names, the npm scope, URLs and the `fancy-ui` MCP id are unchanged.
